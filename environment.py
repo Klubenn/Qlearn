@@ -3,12 +3,12 @@ Here the full map is present, but the information, that is passed to the interpr
 is limited only to the snake view
 """
 
+from collections import namedtuple
 import interpreter
 import numpy as np
 import pandas as pd
 import random
 
-from agent import Movement
 """
 ACTIONS = UP, DOWN, LEFT, RIGHT
 ARBITRARY_STATE = [W,0,0,0,0,0,0,0,0,H,W,W,0,0,G,R,0,0,0,H,S,0,W] # LEFT->RIGHT, UP->DOWN
@@ -22,6 +22,11 @@ ARBITRARY_STATE = [W,0,0,0,0,0,0,0,0,H,W,W,0,0,G,R,0,0,0,H,S,0,W] # LEFT->RIGHT,
 """
 
 BOARD_SIZE = 10
+GAME_OVER = 0
+
+Position = namedtuple('Position', ['x', 'y'])
+
+random.seed(42)
 
 
 class Environment:
@@ -29,7 +34,7 @@ class Environment:
         self.board_size = board_size or BOARD_SIZE
         self.env_size = self.board_size + 2  # Walls on each of the sides
         self.state = self.set_blank_board()
-        self.set_snake()
+        self.snake_position = self.set_snake()
         self.set_apple(2, 'G')
         self.set_apple(1, 'R')
 
@@ -45,48 +50,95 @@ class Environment:
                 arr[i].append(fill)
         return arr
    
-    def set_snake(self):
+    def set_snake(self) -> list[Position]:
         # Set snake head
-        hor, ver = self._get_empty_cell()
-        self.state[hor][ver] = 'H'
+        x, y = self._get_empty_cell()
+        self.state[y][x] = 'H'
+        snake_position = [Position(x, y)]
         
         # Set snake body
         for _ in range(2):
             while True:
-                hor_new, ver_new = random.choice([Movement.move_up(hor, ver), 
-                                                  Movement.move_down(hor, ver), 
-                                                  Movement.move_left(hor, ver), 
-                                                  Movement.move_right(hor, ver)])
-                if self._is_empty(hor_new, ver_new):
-                    hor, ver = hor_new, ver_new
-                    self.state[hor][ver] = 'S'
+                x_new, y_new = random.choice([(x, y - 1), (x, y + 1), (x - 1, y), (x + 1, y)])
+                if self._is_empty(x_new, y_new):
+                    x, y = x_new, y_new
+                    self.state[y][x] = 'S'
+                    snake_position.append(Position(x, y))
                     break
+
+        return snake_position
 
     def set_apple(self, number: int, color: str) -> None:
         for _ in range(number):
-            hor, ver = self._get_empty_cell()
-            self.state[hor][ver] = color
+            x, y = self._get_empty_cell()
+            self.state[y][x] = color
+
+    # def get_snake_vision(self) -> list:
+    #     state = self.state[self.snake_position]
+
+    def move(self, x_new, y_new) -> None:
+        if self.state[y_new][x_new] in ['W', 'H', 'S'] or (self.state[y_new][x_new] == 'R' and len(self.snake_position) == 1):
+            Game.game_over = 1
+            return
+
+        if self.state[y_new][x_new] == '0' or self.state[y_new][x_new] == 'R':
+            self.state[self.snake_position[-1].y][self.snake_position[-1].x] = '0'
+            self.snake_position = self.snake_position[:-1]
+        if self.state[y_new][x_new] == 'R':
+            self.state[self.snake_position[-1].y][self.snake_position[-1].x] = '0'
+            self.snake_position = self.snake_position[:-1]
+        elif self.state[y_new][x_new] == 'G':
+            pass
+        self.snake_position.insert(0, Position(x_new, y_new))
+        self.state[y_new][x_new] = 'H'
+        self.state[self.snake_position[1].y][self.snake_position[1].x] = 'S'
+
 
     def print_env(self) -> None:
         for row in self.state:
             print(' '.join(row))
 
-
-    def _is_empty(self, hor, ver) -> bool:
+    def _is_empty(self, x, y) -> bool:
         """Checks whether the cell is empty.
 
         Returns: True if empty, False if not
         """
-        return self.state[hor][ver] == '0'
+        return self.state[y][x] == '0'
     
-    def _get_empty_cell(self) -> tuple:
+    def _get_empty_cell(self) -> tuple[int, int]:
         """Returnes the coordinates of an empty cell."""
         while True:
-            hor, ver = random.randint(1, self.board_size), random.randint(1, self.board_size)
-            if self._is_empty(hor, ver):
-                return hor, ver
+            x, y = random.randint(1, self.board_size), random.randint(1, self.board_size)
+            if self._is_empty(x, y):
+                return x, y
 
+class Game:
+    round = 0
+    game_over = 0
 
+    @staticmethod
+    def get_snake_length(env: Environment):
+        return len(env.snake_position)
+    
+class Movement:
+    @staticmethod
+    def move_up(hor, ver) -> tuple:
+        return hor, ver - 1
+    
+    @staticmethod
+    def move_down(hor, ver) -> tuple:
+        return hor, ver + 1
+    
+    @staticmethod
+    def move_left(hor, ver) -> tuple:
+        return hor - 1, ver
+    
+    @staticmethod
+    def move_right(hor, ver) -> tuple:
+        return hor + 1, ver
 
 env = Environment()
+env.print_env()
+env.move(3,1)
+print()
 env.print_env()
