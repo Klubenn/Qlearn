@@ -4,9 +4,7 @@ is limited only to the snake view
 """
 
 from collections import namedtuple
-import interpreter
-import numpy as np
-import pandas as pd
+# import interpreter
 import random
 
 """
@@ -69,6 +67,7 @@ class Environment:
         return snake_position
 
     def set_apple(self, number: int, color: str) -> None:
+        assert color in ['R', 'G'], "Unknown apple color"
         for _ in range(number):
             x, y = self._get_empty_cell()
             self.state[y][x] = color
@@ -87,11 +86,13 @@ class Environment:
         if self.state[y_new][x_new] == 'R':
             self.state[self.snake_position[-1].y][self.snake_position[-1].x] = '0'
             self.snake_position = self.snake_position[:-1]
+            self.set_apple(1, 'R')
         elif self.state[y_new][x_new] == 'G':
-            pass
+            self.set_apple(1, 'G')
         self.snake_position.insert(0, Position(x_new, y_new))
         self.state[y_new][x_new] = 'H'
-        self.state[self.snake_position[1].y][self.snake_position[1].x] = 'S'
+        if len(self.snake_position) > 1:
+            self.state[self.snake_position[1].y][self.snake_position[1].x] = 'S'
 
 
     def print_env(self) -> None:
@@ -137,8 +138,11 @@ class Movement:
     def move_right(hor, ver) -> tuple:
         return hor + 1, ver
 
-env = Environment()
-env.print_env()
-env.move(3,1)
-print()
-env.print_env()
+# env = Environment()
+# env.print_env()
+# env.move(*Movement.move_right(*env.snake_position[0]))
+# env.move(*Movement.move_right(*env.snake_position[0]))
+# env.move(*Movement.move_down(*env.snake_position[0]))
+# env.move(*Movement.move_down(*env.snake_position[0]))
+# print()
+# env.print_env()
