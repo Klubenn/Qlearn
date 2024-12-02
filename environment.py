@@ -4,7 +4,6 @@ is limited only to the snake view
 """
 
 from collections import namedtuple
-# import interpreter
 import random
 
 """
@@ -72,9 +71,6 @@ class Environment:
             x, y = self._get_empty_cell()
             self.state[y][x] = color
 
-    # def get_snake_vision(self) -> list:
-    #     state = self.state[self.snake_position]
-
     def move(self, x_new, y_new) -> None:
         if self.state[y_new][x_new] in ['W', 'H', 'S'] or (self.state[y_new][x_new] == 'R' and len(self.snake_position) == 1):
             Game.game_over = 1
@@ -116,10 +112,6 @@ class Environment:
 class Game:
     round = 0
     game_over = 0
-
-    @staticmethod
-    def get_snake_length(env: Environment):
-        return len(env.snake_position)
     
 class Movement:
     @staticmethod
@@ -137,12 +129,3 @@ class Movement:
     @staticmethod
     def move_right(hor, ver) -> tuple:
         return hor + 1, ver
-
-# env = Environment()
-# env.print_env()
-# env.move(*Movement.move_right(*env.snake_position[0]))
-# env.move(*Movement.move_right(*env.snake_position[0]))
-# env.move(*Movement.move_down(*env.snake_position[0]))
-# env.move(*Movement.move_down(*env.snake_position[0]))
-# print()
-# env.print_env()
