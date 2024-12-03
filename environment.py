@@ -32,6 +32,7 @@ class Environment:
         self.env_size = self.board_size + 2  # Walls on each of the sides
         self.state = self.set_blank_board()
         self.snake_position = self.set_snake()
+        self.duration = 0
         self.set_apple(2, 'G')
         self.set_apple(1, 'R')
 
@@ -71,25 +72,27 @@ class Environment:
             x, y = self._get_empty_cell()
             self.state[y][x] = color
 
-    def move(self, x_new, y_new) -> None:
-        if self.state[y_new][x_new] in ['W', 'H', 'S'] or (self.state[y_new][x_new] == 'R' and len(self.snake_position) == 1):
+    def move(self, p: Position) -> None:
+        x_new, y_new = p.x, p.y
+        letter = self.state[y_new][x_new]
+        if letter in ['W', 'H', 'S'] or (letter == 'R' and len(self.snake_position) == 1):
             Game.game_over = 1
-            return
-
-        if self.state[y_new][x_new] == '0' or self.state[y_new][x_new] == 'R':
-            self.state[self.snake_position[-1].y][self.snake_position[-1].x] = '0'
-            self.snake_position = self.snake_position[:-1]
-        if self.state[y_new][x_new] == 'R':
-            self.state[self.snake_position[-1].y][self.snake_position[-1].x] = '0'
-            self.snake_position = self.snake_position[:-1]
-            self.set_apple(1, 'R')
-        elif self.state[y_new][x_new] == 'G':
-            self.set_apple(1, 'G')
-        self.snake_position.insert(0, Position(x_new, y_new))
-        self.state[y_new][x_new] = 'H'
-        if len(self.snake_position) > 1:
-            self.state[self.snake_position[1].y][self.snake_position[1].x] = 'S'
-
+        else:
+            if letter in ['0', 'R']:
+                self.state[self.snake_position[-1].y][self.snake_position[-1].x] = '0'
+                self.snake_position = self.snake_position[:-1]
+            if letter == 'R':
+                self.state[self.snake_position[-1].y][self.snake_position[-1].x] = '0'
+                self.snake_position = self.snake_position[:-1]
+                self.set_apple(1, 'R')
+            elif letter == 'G':
+                self.set_apple(1, 'G')
+            self.snake_position.insert(0, Position(x_new, y_new))
+            self.state[y_new][x_new] = 'H'
+            if len(self.snake_position) > 1:
+                self.state[self.snake_position[1].y][self.snake_position[1].x] = 'S'
+        self.duration += 1
+        return letter
 
     def print_env(self) -> None:
         for row in self.state:
@@ -112,20 +115,6 @@ class Environment:
 class Game:
     round = 0
     game_over = 0
-    
-class Movement:
-    @staticmethod
-    def move_up(hor, ver) -> tuple:
-        return hor, ver - 1
-    
-    @staticmethod
-    def move_down(hor, ver) -> tuple:
-        return hor, ver + 1
-    
-    @staticmethod
-    def move_left(hor, ver) -> tuple:
-        return hor - 1, ver
-    
-    @staticmethod
-    def move_right(hor, ver) -> tuple:
-        return hor + 1, ver
+
+# env = Environment()
+# env.print_env()

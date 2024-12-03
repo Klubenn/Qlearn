@@ -1,5 +1,6 @@
 import pygame
-from environment import Environment, Movement, Game
+from environment import Environment, Game
+from interpreter import Movement
 
 CELL = 50
 BOARD_SIZE = 10
@@ -96,19 +97,7 @@ class Visualize:
                     draw_circle(j, i, "red")
                 elif value == '0':
                     pass
-        
         draw_board()
-        
-    # def process_movement(self, env: Environment):
-    #     keys = pygame.key.get_pressed()
-    #     if keys[pygame.K_RIGHT]:
-    #         env.move(*Movement.move_right(*env.snake_position[0]))
-    #     elif keys[pygame.K_LEFT]:
-    #         pass
-    #     elif keys[pygame.K_DOWN]:
-    #         pass
-    #     elif keys[pygame.K_UP]:
-    #         pass
 
     def run(self):
         env = Environment()
@@ -120,13 +109,13 @@ class Visualize:
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                     running = False
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
-                    env.move(*Movement.move_right(*env.snake_position[0]))
+                    env.move(Movement.move_right(env.snake_position[0]))
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
-                    env.move(*Movement.move_left(*env.snake_position[0]))
+                    env.move(Movement.move_left(env.snake_position[0]))
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
-                    env.move(*Movement.move_up(*env.snake_position[0]))
+                    env.move(Movement.move_up(env.snake_position[0]))
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN:
-                    env.move(*Movement.move_down(*env.snake_position[0]))
+                    env.move(Movement.move_down(env.snake_position[0]))
             
             if Game.game_over == 1:
                 Game.round += 1
@@ -147,17 +136,6 @@ class Visualize:
 
 def game():
     Visualize()
-
-
-
-
-
-
-
-
-
-
-
 
 
 if __name__ == "__main__":
