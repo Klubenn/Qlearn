@@ -1,5 +1,6 @@
 from agent import Agent, Action
 from environment import Environment, Game, Position
+import random
 
 class Movement:
     @staticmethod
@@ -65,26 +66,31 @@ class Interpreter:
                 self.max_duration = self.env.duration
             if (snake_length := len(self.env.snake_position)) > self.max_length:
                 self.max_length = snake_length
-            print("Game over")
-            print(f"Snake length: {snake_length}")
-            print(f"Rounds played: {Game.round}")
+            # print("Game over")
+            # print(f"Snake length: {snake_length}")
+            # print(f"Rounds played: {Game.round}")
             self.env = Environment()
+            if Game.round % 10000 == 0:
+                self.exploitation_rate -= 0.1
+                self.exploitation_rate = 0 if self.exploitation_rate < 0 else self.exploitation_rate
+                print(f'Max length: {self.max_length}')
+                print(f'Max duration: {self.max_duration}')
+                print(len(self.ag.qtable))
 
 
     def run(self):
         while True:
             self.state = self._get_snake_view()
             self.action = self._request_action()
-            print(self.action)
             self.current_cell = self.env.move(action_to_function[self.action](self.env.snake_position[0]))
             self._send_reward()
             self._update_stats()
             
-            # temporary break
-            if Game.round >= 10:
-                print(self.ag.qtable)
+            if Game.round % 100000 == 0:
                 break
 
 
-play = Interpreter()
-play.run()
+if __name__ == "__main__":
+    random.seed(42)
+    play = Interpreter()
+    play.run()

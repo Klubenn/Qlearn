@@ -1,3 +1,4 @@
+import random
 import pygame
 from environment import Environment, Game
 from interpreter import Movement
@@ -100,7 +101,7 @@ class Visualize:
         draw_board()
 
     def run(self):
-        env = Environment()
+        env = Environment(BOARD_SIZE)
         running = True
         while running:
             for event in pygame.event.get():
@@ -123,7 +124,7 @@ class Visualize:
                 print("Game over")
                 print(f"Snake length: {len(env.snake_position)}")
                 print(f"Rounds played: {Game.round}")
-                env = Environment()
+                env = Environment(BOARD_SIZE)
 
 
             self.window.fill((25, 25, 25))
@@ -134,9 +135,6 @@ class Visualize:
         pygame.quit()
 
 
-def game():
-    Visualize()
-
-
 if __name__ == "__main__":
-    game()
+    random.seed(42)
+    Visualize()

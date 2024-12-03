@@ -19,16 +19,12 @@ ARBITRARY_STATE = [W,0,0,0,0,0,0,0,0,H,W,W,0,0,G,R,0,0,0,H,S,0,W] # LEFT->RIGHT,
 """
 
 BOARD_SIZE = 10
-GAME_OVER = 0
-
 Position = namedtuple('Position', ['x', 'y'])
-
-random.seed(42)
 
 
 class Environment:
-    def __init__(self, board_size=None) -> None:
-        self.board_size = board_size or BOARD_SIZE
+    def __init__(self, board_size=BOARD_SIZE) -> None:
+        self.board_size = board_size
         self.env_size = self.board_size + 2  # Walls on each of the sides
         self.state = self.set_blank_board()
         self.snake_position = self.set_snake()
@@ -115,6 +111,3 @@ class Environment:
 class Game:
     round = 0
     game_over = 0
-
-# env = Environment()
-# env.print_env()
