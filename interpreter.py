@@ -70,8 +70,8 @@ class Interpreter:
 
     def _update_stats(self) -> None:
         if Game.game_over == 1:
-            if (Game.round >= 120000 and Game.round < 120020) or (Game.round >= 130000 and Game.round < 130020):
-                print(f'er: {self.exploitation_rate} | len: {len(self.env.snake_position)} | dur: {self.env.duration}')
+            if (Game.round > 99980 and Game.round < 100030):
+                print(f'len: {len(self.env.snake_position)} | dur: {self.env.duration}')
             Game.round += 1
             Game.game_over = 0
             if self.env.duration > self.max_duration:
@@ -100,6 +100,7 @@ class Interpreter:
             self._send_reward()
             if self.env.duration > 200:
                 Game.game_over = 1
+                self.next_state = None
             self._update_stats()
             
             if Game.round % 150000 == 0:

@@ -27,7 +27,7 @@ class Agent:
         self.qtable[states[action]] = self.qtable[states[action]] + self.lr * (
             reward + self.df * maxQ_next - self.qtable[states[action]])
 
-    def select_action(self, state: list|dict, exploitation_rate: float):
+    def select_action(self, state: dict, exploitation_rate: float):
         explore = random.choices([True, False], [1 - exploitation_rate, exploitation_rate])[0]
         self._initiate_state_weights(state)
         if explore:
