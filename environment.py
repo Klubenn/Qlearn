@@ -8,7 +8,7 @@ import random
 
 """
 ACTIONS = UP, DOWN, LEFT, RIGHT
-ARBITRARY_STATE = [W,0,0,0,0,0,0,0,0,H,W,W,0,0,G,R,0,0,0,H,S,0,W] # LEFT->RIGHT, UP->DOWN
+STATE = ['W','0','0','0','0','0','0','0','0','H','W','W','0','0','G','R','0','0','0','H','S','0','W'] # LEFT->RIGHT, UP->DOWN
 
 • W = Wall
 • H = Snake Head
@@ -45,6 +45,8 @@ class Environment:
         return arr
    
     def set_snake(self) -> list[Position]:
+        self.snake_position = []
+        
         # Set snake head
         x, y = self._get_empty_cell()
         self.state[y][x] = 'H'
@@ -66,12 +68,20 @@ class Environment:
         assert color in ['R', 'G'], "Unknown apple color"
         for _ in range(number):
             x, y = self._get_empty_cell()
+            if Game.game_over == 1:
+                return
             self.state[y][x] = color
 
-    def move(self, p: Position) -> None:
+    def move(self, p: Position) -> str:
+        """ Moves the snake head to the new cell and adjusts the environment 
+            to the required state.
+
+            Returns:
+                str: cell type, where the snake's head landed
+        """
         x_new, y_new = p.x, p.y
         letter = self.state[y_new][x_new]
-        if letter in ['W', 'H', 'S'] or (letter == 'R' and len(self.snake_position) == 1):
+        if letter in ['W', 'S'] or (letter == 'R' and len(self.snake_position) == 1):
             Game.game_over = 1
         else:
             if letter in ['0', 'R']:
@@ -101,12 +111,21 @@ class Environment:
         """
         return self.state[y][x] == '0'
     
-    def _get_empty_cell(self) -> tuple[int, int]:
+    def _get_empty_cell(self) -> Position:
         """Returnes the coordinates of an empty cell."""
         while True:
-            x, y = random.randint(1, self.board_size), random.randint(1, self.board_size)
-            if self._is_empty(x, y):
-                return x, y
+            empty = [
+                Position(x, y) 
+                for y, line in enumerate(self.state) 
+                for x, _ in enumerate(line) 
+                if self.state[y][x] == '0'
+                ]
+            if len(empty) == 0:
+                print("YOU WON!!!!")
+                Game.game_over = 1
+                return None, None
+            return random.choice(empty)
+
 
 class Game:
     round = 0
