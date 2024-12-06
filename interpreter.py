@@ -1,6 +1,6 @@
 from agent import Agent
 from environment import Environment
-from utils import Action, Game, Movement
+from utils import Action, Game, GameState, Movement
 import random
 import itertools
     
@@ -45,11 +45,11 @@ class Interpreter:
         return self.ag.select_action(self.state, self.exploitation_rate)
 
     def _update_stats(self) -> None:
-        if Game.game_over == 1:
+        if Game.state != GameState.RUNNING:
             if (Game.round > 99980 and Game.round < 100030):
                 print(f'len: {len(self.env.snake_position)} | dur: {self.env.duration}')
             Game.round += 1
-            Game.game_over = 0
+            Game.state = GameState.RUNNING
             if self.env.duration > self.max_duration:
                 self.max_duration = self.env.duration
             if (snake_length := len(self.env.snake_position)) > self.max_length:
@@ -73,13 +73,13 @@ class Interpreter:
             self.state = self.next_state or self._get_snake_view()
             self.action = self._request_action()
             self.current_cell = self.env.move(action_to_function[self.action](self.env.snake_position[0]))
-            if not Game.game_over:
+            if Game.state == GameState.RUNNING:
                 self.next_state = self._get_snake_view()
             else:
                 self.next_state = None
             self._send_reward()
             if self.env.duration > 200:
-                Game.game_over = 1
+                Game.state = GameState.LOST
                 self.next_state = None
             self._update_stats()
             

@@ -20,10 +20,22 @@ class Action(Enum):
     LEFT = 3
     RIGHT = 4
 
+class GameState(Enum):
+    """
+    An enumeration representing the possible states of the game.
+
+    Members:
+        RUNNING (int): The game is running.
+        LOST (int): The game is lost.
+        WON (int): The game is won.
+    """
+    RUNNING = 0
+    LOST = 1
+    WON = 2
 
 class Game:
     round = 0
-    game_over = 0
+    state = GameState.RUNNING
 
 
 class Movement:
