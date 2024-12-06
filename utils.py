@@ -1,7 +1,13 @@
 from collections import namedtuple
 from enum import Enum
+import logging
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 BOARD_SIZE = 10
+MAX_DURATION = 400
+ROUNDS = 200
 
 Position = namedtuple('Position', ['x', 'y'])
 
@@ -34,11 +40,36 @@ class GameState(Enum):
     WON = 2
 
 class Game:
+    """
+    A class to represent the game state and round.
+
+    Attributes:
+        round (int): The current round of the game.
+        state (GameState): The current state of the game.
+        not_ten (int): The number of rounds where the snake length was less than 10.
+    """
     round = 0
     state = GameState.RUNNING
-
+    not_ten = 0
 
 class Movement:
+    """
+    A class containing static methods to move the snake in different 
+    directions and return new position.
+
+    Methods:
+        move_up(p: Position) -> Position:
+            Moves the snake up by one cell.
+        
+        move_down(p: Position) -> Position:
+            Moves the snake down by one cell.
+        
+        move_left(p: Position) -> Position:
+            Moves the snake left by one cell.
+        
+        move_right(p: Position) -> Position:
+            Moves the snake right by one cell.
+    """
     @staticmethod
     def move_up(p: Position) -> Position:
         return Position(p.x, p.y - 1)
