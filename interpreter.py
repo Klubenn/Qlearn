@@ -1,33 +1,9 @@
-from agent import Agent, Action
-from environment import Environment, Game, Position
+from agent import Agent
+from environment import Environment
+from utils import Action, Game, Movement
 import random
 import itertools
-
-class Movement:
-    @staticmethod
-    def move_up(p: Position) -> Position:
-        return Position(p.x, p.y - 1)
     
-    @staticmethod
-    def move_down(p: Position) -> Position:
-        return Position(p.x, p.y + 1)
-    
-    @staticmethod
-    def move_left(p: Position) -> Position:
-        return Position(p.x - 1, p.y)
-    
-    @staticmethod
-    def move_right(p: Position) -> Position:
-        return Position(p.x + 1, p.y)
-    
-
-action_to_function = {
-    Action.UP: Movement.move_up,
-    Action.DOWN: Movement.move_down,
-    Action.LEFT: Movement.move_left,
-    Action.RIGHT: Movement.move_right
-}
-
 
 class Interpreter:
     def __init__(self, exploitation=False) -> None:
@@ -85,10 +61,14 @@ class Interpreter:
                 self.exploitation_rate += 0.1
                 self.exploitation_rate = 0.8 if self.exploitation_rate > 1 else self.exploitation_rate
                 self.max_duration, self.max_length = 0, 0
-            
-
 
     def run(self):
+        action_to_function = {
+            Action.UP: Movement.move_up,
+            Action.DOWN: Movement.move_down,
+            Action.LEFT: Movement.move_left,
+            Action.RIGHT: Movement.move_right
+        }
         while True:
             self.state = self.next_state or self._get_snake_view()
             self.action = self._request_action()

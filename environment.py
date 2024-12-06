@@ -1,25 +1,5 @@
-"""
-Here the full map is present, but the information, that is passed to the interpreter,
-is limited only to the snake view
-"""
-
-from collections import namedtuple
+from utils import Game, Position, BOARD_SIZE
 import random
-
-"""
-ACTIONS = UP, DOWN, LEFT, RIGHT
-STATE = ['W','0','0','0','0','0','0','0','0','H','W','W','0','0','G','R','0','0','0','H','S','0','W'] # LEFT->RIGHT, UP->DOWN
-
-• W = Wall
-• H = Snake Head
-• S = Snake body segment
-• G = Green apple
-• R = Red apple
-• 0 = Empty space
-"""
-
-BOARD_SIZE = 10
-Position = namedtuple('Position', ['x', 'y'])
 
 
 class Environment:
@@ -126,7 +106,3 @@ class Environment:
                 return None, None
             return random.choice(empty)
 
-
-class Game:
-    round = 0
-    game_over = 0

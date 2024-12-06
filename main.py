@@ -1,63 +1,12 @@
 import random
 import time
 import pygame
-from environment import Environment, Game
-from interpreter import Movement
-from pygame.locals import *
+from environment import Environment
+from utils import Game, Movement
+# from pygame.locals import *
 
 CELL = 50
 BOARD_SIZE = 10
-
-def display_text():
-    """Draw text to the screen."""
-    import pygame
-    import time
-    
-    BLACK = (0, 0, 0)
-    RED = (255, 0, 0)
-    GREEN = (0, 255, 0)
-    BLUE = (0, 0, 255)
-    GRAY = (200, 200, 200)
-
-    pygame.init()
-    screen = pygame.display.set_mode((640, 240))
-
-    sysfont = pygame.font.get_default_font()
-    print('system font :', sysfont)
-
-    t0 = time.time()
-    font = pygame.font.SysFont(None, 48)
-    print('time needed for Font creation :', time.time()-t0)
-
-    img = font.render(sysfont, True, RED)
-    rect = img.get_rect()
-    pygame.draw.rect(img, BLUE, rect, 1)
-
-    font1 = pygame.font.SysFont('chalkduster.ttf', 72)
-    img1 = font1.render('chalkduster.ttf', True, BLUE)
-
-    font2 = pygame.font.SysFont('didot.ttc', 72)
-    img2 = font2.render('didot.ttc', True, GREEN)
-
-    fonts = pygame.font.get_fonts()
-    print(len(fonts))
-    for i in range(7):
-        print(fonts[i])
-
-    running = True
-    background = GRAY
-    while running:
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                running = False
-
-        screen.fill(background)
-        screen.blit(img, (20, 20))
-        screen.blit(img1, (20, 50))
-        screen.blit(img2, (20, 120))
-        pygame.display.update()
-
-    pygame.quit()
 
 def tutorial():
     pygame.init()
@@ -178,7 +127,7 @@ class Visualize:
                 text = font.render('Game Over!', False, (255, 0, 0))
                 self.window.blit(text, (100, 250))
                 pygame.display.update()
-                time.sleep(3)
+                time.sleep(2)
                 Game.round += 1
                 Game.game_over = 0
                 print("Game over")
@@ -198,5 +147,3 @@ class Visualize:
 if __name__ == "__main__":
     random.seed(42)
     Visualize()
-
-    # display_text()
