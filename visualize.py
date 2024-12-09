@@ -44,6 +44,13 @@ class Visualize:
         draw_board()
         pygame.display.update()
 
+    def catch_exit_event(self) -> bool:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                pygame.quit()
+                return True
+        return False
+
     def run(self):
         """
         Runs the game loop, handling events and updating the game state.

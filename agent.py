@@ -1,6 +1,6 @@
 import json
 import random
-from utils import Action
+from utils import Action, Game
 
 class Agent:
     """
@@ -60,6 +60,10 @@ class Agent:
         if explore:
             return random.choice([a for a in Action])
         action_weights = {a: self.qtable[s] for a, s in state.items()}
+        if Game.randchoice:
+            max_value = max(action_weights.values())
+            max_actions = [a for a, weight in action_weights.items() if weight == max_value]
+            return random.choice(max_actions)
         return max(action_weights, key=action_weights.get)
 
     def update_q_table(self, state: dict, new_state: dict | None, action: Action, reward: int) -> None:

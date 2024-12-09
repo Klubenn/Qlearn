@@ -20,4 +20,4 @@ python3 main.py
 * add other information to the visual part, like snake length, games played, rates
 * introduce a Decay Strategy with Exploration Boost and decay rate
 * log and find situations with extremely long plays, visualize them and find the cause of such behavior
-
+* for dontlearn option remove adding new entries to the agent (?) or make looooot's of trainings for the model

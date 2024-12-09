@@ -2,7 +2,7 @@ from collections import namedtuple
 from enum import Enum
 import logging
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format='%(message)s')
 logger = logging.getLogger(__name__)
 
 CELL = 50
@@ -55,24 +55,46 @@ class Game:
         env_size (int): The size of the game environment including walls.
         save_path (str): The path where the model (q-table) will be saved.
         load_path (str): The path where the model (q-table) will be loaded from.
-        visual (str): Display training progress ('on' or 'off').
+        visual (bool): If True, display training progress.
         dontlearn (bool): If True, the model won't update q-table.
+        randchoice (bool): If True, the agent will select a random maximum direction from the q-table.
         step_by_step (bool): If True, the model will wait for user input after each move.
+        manual (bool): If True, play the game manually.
     """
     round = 0
     state = GameState.RUNNING
     not_ten = 0
     max_duration = 0
     max_length = 0
+    max_break = 0
     sessions = SESSIONS
     boardsize = BOARD_SIZE
     env_size = BOARD_SIZE + 2  # Walls on each of the sides
     save_path = None
     load_path = None
-    visual = 'off'
+    visual = False
+    exploit = False
     dontlearn = False
+    randchoice = False
     step_by_step = False
     manual = False
+
+    def reset_stats():
+        Game.not_ten = 0
+        Game.max_duration = 0
+        Game.max_length = 0
+        Game.max_break = 0
+
+class Stats:
+    max_length = []
+    all_lengths = []
+    breaks = 0
+    not_ten = 0
+
+    def update_stats():
+        Stats.max_length.append(Game.max_length)
+        Stats.breaks += Game.max_break
+        Stats.not_ten += Game.not_ten
 
 class Movement:
     """
