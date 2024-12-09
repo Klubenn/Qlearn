@@ -3,14 +3,10 @@ import random
 
 
 class Environment:
-    def __init__(self, board_size=BOARD_SIZE) -> None:
+    def __init__(self) -> None:
         """
-        Initialize the environment with a given board size.
-        
-        Args:
-            board_size (int): Size of the game board (default is BOARD_SIZE)
+        Initialize the environment with a snake and apples.
         """
-        self.env_size = board_size + 2  # Walls on each of the sides
         self.duration = 0
         self.state = self._initialize_board()
         self.snake_position = self._initialize_snake()
@@ -61,10 +57,10 @@ class Environment:
         Returns:
             list: The initialized board state.
         """
-        arr = list([[] for _ in range(self.env_size)])
-        for i in range(self.env_size):
-            for j in range(self.env_size):
-                if i in [0, self.env_size -1] or j in [0, self.env_size -1]:
+        arr = list([[] for _ in range(Game.env_size)])
+        for i in range(Game.env_size):
+            for j in range(Game.env_size):
+                if i in [0, Game.env_size -1] or j in [0, Game.env_size -1]:
                     fill = 'W'
                 else:
                     fill = '0'

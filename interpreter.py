@@ -1,24 +1,26 @@
+import time
 from agent import Agent
 from environment import Environment
-from utils import ROUNDS, logger, MAX_DURATION, Action, Game, GameState, Movement
+from utils import logger, MAX_DURATION, Action, Game, GameState, Movement
 import random
 import itertools
+
+from visualize import Visualize
     
 
 class Interpreter:
-    def __init__(self, exploitation=False) -> None:
-        self.exploitation_rate = float(exploitation is True) or 0.0
+    def __init__(self) -> None:
+        self.exploitation_rate = float(Game.dontlearn is True) or 0.0
         self.state = None
         self.next_state = None
         self.current_cell = None
         self.action = None
-        self.max_length = 0
-        self.max_duration = 0
         self.env = Environment()
         self.ag = Agent()
+        if Game.load_path:
+            self.ag.load_q_table(Game.load_path)
 
     def _calculate_reward(self) -> int:
-
         if self.current_cell in ['W', 'S']:
             return -100
         elif self.current_cell == 'R':
@@ -30,7 +32,7 @@ class Interpreter:
     
     def _get_snake_view(self) -> dict:
         x, y = self.env.snake_position[0]
-        vertical = [self.env.state[i][x] for i in range(self.env.env_size)]
+        vertical = [self.env.state[i][x] for i in range(Game.env_size)]
         # return {
         #     Action.UP: ''.join(vertical[y-1::-1]),
         #     Action.DOWN: ''.join(vertical[y + 1:]),
@@ -45,6 +47,8 @@ class Interpreter:
         }
     
     def _send_reward(self) -> None:
+        if Game.dontlearn:
+            return
         self.ag.update_q_table(self.state, self.next_state, self.action, self._calculate_reward())
 
     def _request_action(self) -> Action:
@@ -52,25 +56,26 @@ class Interpreter:
 
     def _update_stats(self) -> None:
         if Game.state != GameState.RUNNING:
-            snake_length = len(self.env.snake_position)
-            if snake_length < 10:
-                Game.not_ten += 1
-            if Game.round > ROUNDS - 20:
-                logger.info(f'len: {snake_length} | dur: {self.env.duration}')
             Game.round += 1
             Game.state = GameState.RUNNING
-            if self.env.duration > self.max_duration:
-                self.max_duration = self.env.duration
-            if snake_length > self.max_length:
-                self.max_length = snake_length
+            snake_length = len(self.env.snake_position)
+            if snake_length < 10:
+                print(Game.round)
+                Game.not_ten += 1
+            if Game.round > Game.sessions - 20:
+                logger.info(f'len: {snake_length} | dur: {self.env.duration}')
+            if self.env.duration > Game.max_duration:
+                Game.max_duration = self.env.duration
+            if snake_length > Game.max_length:
+                Game.max_length = snake_length
 
             self.env = Environment()
-            if Game.round % 10 == 0:
-                logger.info(f'exploit_rate: {self.exploitation_rate:.1f} | max_len: {self.max_length} | max_dur: {self.max_duration} | not_ten: {Game.not_ten} | qtab_len: {len(self.ag.qtable)}')
-                self.exploitation_rate += 0.1
-                self.exploitation_rate = 1 if self.exploitation_rate > 0.9 else self.exploitation_rate
-                self.max_duration, self.max_length = 0, 0
-                Game.not_ten = 0
+            if Game.round % max(Game.sessions // 10 - 1, 1) == 0:
+                logger.info(f'exploit_rate: {self.exploitation_rate:.1f} | max_len: {Game.max_length} | max_dur: {Game.max_duration} | not_ten: {Game.not_ten} | qtab_len: {len(self.ag.qtable)}')
+                if not Game.dontlearn:
+                    self.exploitation_rate += 0.1
+                    self.exploitation_rate = 1 if self.exploitation_rate > 0.9 else self.exploitation_rate
+                self.max_duration, self.max_length, Game.not_ten = 0, 0, 0
 
     def run(self):
         action_to_function = {
@@ -79,7 +84,10 @@ class Interpreter:
             Action.LEFT: Movement.move_left,
             Action.RIGHT: Movement.move_right
         }
-        while True:
+        visual = Visualize()
+        while Game.round != Game.sessions:
+            visual.draw_state(self.env.state)
+            time.sleep(0.5)
             self.state = self.next_state or self._get_snake_view()
             self.action = self._request_action()
             self.current_cell = self.env.move(action_to_function[self.action](self.env.snake_position[0]))
@@ -90,16 +98,13 @@ class Interpreter:
                 self.next_state = None
             self._update_stats()
             
-            if Game.round % ROUNDS == 0:
-                logger.info("Some values from Q-table:")
-                for i, (k, v) in enumerate(self.ag.qtable.items()):
-                    logger.info(f"{k}: {v}")
-                    if i == 20:
-                        break
-                break
+        if Game.save_path:
+            self.ag.save_q_table(Game.save_path)
+        print(f"Game over, , max length = {Game.max_length}, max duration = {Game.max_duration}")
 
 
 if __name__ == "__main__":
     random.seed(42)
     play = Interpreter()
+    visual = Visualize()
     play.run()

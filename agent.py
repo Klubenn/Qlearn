@@ -1,3 +1,4 @@
+import json
 import random
 from utils import Action
 
@@ -81,6 +82,39 @@ class Agent:
         self.qtable[state[action]] = self.qtable[state[action]] + self.lr * (
             reward + self.df * maxQ_next - self.qtable[state[action]])
     
+    def save_q_table(self, path: str) -> None:
+        """
+        Saves the Q-table to a file.
+
+        Args:
+            path (str): The path to the file where the Q-table will be saved.
+
+        Returns:
+            None
+        """
+        try:
+            with open(path, 'w') as f:
+                json.dump(self.qtable, f, indent=4)
+        except Exception as e:
+            print(f'Error saving Q-table: {e}')
+
+    def load_q_table(self, path: str) -> None:
+        """
+        Loads the Q-table from a file.
+
+        Args:
+            path (str): The path to the file where the Q-table is saved.
+
+        Returns:
+            None
+        """
+        try:
+            with open(path, 'r') as f:
+                self.qtable = json.load(f)
+        except Exception as e:
+            print(f'Error loading Q-table: {e}')
+            exit(1)
+        
     def _initiate_state_weights(self, state: dict) -> None:
         """
         Initializes Q-values for the snake's current state in all possible directions.

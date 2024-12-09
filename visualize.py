@@ -2,24 +2,19 @@ import random
 import time
 import pygame
 from environment import Environment
-from utils import Game, GameState, Movement
-
-
-CELL = 50
-BOARD_SIZE = 4
+from utils import Game, GameState, Movement, CELL
 
 
 class Visualize:
     def __init__(self) -> None:
         pygame.init()
-        self.window_width = 600
-        self.window_height = 600
+        self.window_width = Game.env_size * CELL
+        self.window_height = Game.env_size * CELL
         self.window = pygame.display.set_mode((self.window_width, self.window_height))
         pygame.display.set_caption("Learn2Slither")
-        self.run()
 
     def draw_state(self, state):
-
+        self.window.fill((25, 25, 25))
         def draw_rect(x, y, color):
             pygame.draw.rect(self.window, color, (x * CELL, y * CELL, CELL, CELL))
 
@@ -27,10 +22,10 @@ class Visualize:
             pygame.draw.circle(self.window, color, (x * CELL + CELL / 2, y * CELL + CELL / 2), 20)
 
         def draw_board():
-            for i in range(BOARD_SIZE + 1):
+            for i in range(Game.boardsize + 1):
                 iterate = CELL * i + CELL
-                pygame.draw.line(self.window, "white", (CELL, iterate), (CELL * BOARD_SIZE + CELL, iterate), 2)
-                pygame.draw.line(self.window, "white", (iterate, CELL), (iterate, CELL * BOARD_SIZE + CELL), 2)
+                pygame.draw.line(self.window, "white", (CELL, iterate), (CELL * Game.boardsize + CELL, iterate), 2)
+                pygame.draw.line(self.window, "white", (iterate, CELL), (iterate, CELL * Game.boardsize + CELL), 2)
 
         for i, array in enumerate(state):
             for j, value in enumerate(array):
@@ -47,12 +42,13 @@ class Visualize:
                 elif value == '0':
                     pass
         draw_board()
+        pygame.display.update()
 
     def run(self):
         """
         Runs the game loop, handling events and updating the game state.
         """
-        env = Environment(BOARD_SIZE)
+        env = Environment()
         running = True
         while running:
             for event in pygame.event.get():
@@ -77,15 +73,14 @@ class Visualize:
                 text = font.render(phrase, False, (255, 0, 0))
                 self.window.blit(text, (100, 250))
                 pygame.display.update()
-                time.sleep(2)
+                time.sleep(1)
                 Game.round += 1
                 Game.state = GameState.RUNNING
                 print("Game over")
                 print(f"Snake length: {len(env.snake_position)}")
                 print(f"Rounds played: {Game.round}")
-                env = Environment(BOARD_SIZE)
+                env = Environment()
 
-            self.window.fill((25, 25, 25))
             self.draw_state(env.state)
 
             pygame.display.update()
@@ -95,4 +90,6 @@ class Visualize:
 
 if __name__ == "__main__":
     random.seed(42)
-    Visualize()
+    play = Visualize()
+    play.run()
+

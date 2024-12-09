@@ -5,9 +5,10 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+CELL = 50
 BOARD_SIZE = 10
 MAX_DURATION = 400
-ROUNDS = 200
+SESSIONS = 200
 
 Position = namedtuple('Position', ['x', 'y'])
 
@@ -47,10 +48,31 @@ class Game:
         round (int): The current round of the game.
         state (GameState): The current state of the game.
         not_ten (int): The number of rounds where the snake length was less than 10.
+        max_duration (int): The maximum duration of a round.
+        max_length (int): The maximum length of the snake.
+        sessions (int): The number of game sessions to perform.
+        boardsize (int): The size of the game board.
+        env_size (int): The size of the game environment including walls.
+        save_path (str): The path where the model (q-table) will be saved.
+        load_path (str): The path where the model (q-table) will be loaded from.
+        visual (str): Display training progress ('on' or 'off').
+        dontlearn (bool): If True, the model won't update q-table.
+        step_by_step (bool): If True, the model will wait for user input after each move.
     """
     round = 0
     state = GameState.RUNNING
     not_ten = 0
+    max_duration = 0
+    max_length = 0
+    sessions = SESSIONS
+    boardsize = BOARD_SIZE
+    env_size = BOARD_SIZE + 2  # Walls on each of the sides
+    save_path = None
+    load_path = None
+    visual = 'off'
+    dontlearn = False
+    step_by_step = False
+    manual = False
 
 class Movement:
     """
@@ -85,3 +107,4 @@ class Movement:
     @staticmethod
     def move_right(p: Position) -> Position:
         return Position(p.x + 1, p.y)
+    
