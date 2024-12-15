@@ -90,7 +90,7 @@ class Interpreter:
                 if visual.catch_exit_event():
                     break
                 visual.draw_state(self.env.state)
-                time.sleep(0.5)
+                time.sleep(0.2)
             self.state = self.next_state or self._get_snake_view()
             self.action = self._request_action()
             self.current_cell = self.env.move(action_to_function[self.action](self.env.snake_position[0]))

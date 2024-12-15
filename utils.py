@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 CELL = 50
 BOARD_SIZE = 10
-MAX_DURATION = 400
+MAX_DURATION = 1000
 SESSIONS = 200
 
 Position = namedtuple('Position', ['x', 'y'])
