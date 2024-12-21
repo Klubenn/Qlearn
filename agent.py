@@ -56,15 +56,19 @@ class Agent:
             Action: The selected direction of the move.
         """
         explore = random.choices([True, False], [1 - exploitation_rate, exploitation_rate])[0]
-        self._initiate_state_weights(state)
+        if not Game.dontlearn:
+            self._initiate_state_weights(state)
         if explore:
             return random.choice([a for a in Action])
-        action_weights = {a: self.qtable[s] for a, s in state.items()}
-        if Game.randchoice:
-            max_value = max(action_weights.values())
+        action_weights = {a: int(self.qtable[s]) for a, s in state.items() if s in self.qtable}
+        max_value = max(action_weights.values())
+        if Game.fill_zeroes:
+            max_actions = [a for a, weight in action_weights.items() if weight == 0]
+            if not max_actions:
+                max_actions = [a for a, weight in action_weights.items() if weight == max_value]
+        else:
             max_actions = [a for a, weight in action_weights.items() if weight == max_value]
-            return random.choice(max_actions)
-        return max(action_weights, key=action_weights.get)
+        return random.choice(max_actions)
 
     def update_q_table(self, state: dict, new_state: dict | None, action: Action, reward: int) -> None:
         """

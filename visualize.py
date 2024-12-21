@@ -2,7 +2,7 @@ import random
 import time
 import pygame
 from environment import Environment
-from utils import Game, GameState, Movement, CELL
+from utils import Game, GameState, Movement, CELL, KeyEvent
 
 
 class Visualize:
@@ -44,12 +44,16 @@ class Visualize:
         draw_board()
         pygame.display.update()
 
-    def catch_exit_event(self) -> bool:
+    def catch_key_event(self) -> KeyEvent|None:
+        """
+        Catch key events and return the corresponding key event.
+        """
         for event in pygame.event.get():
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                 pygame.quit()
-                return True
-        return False
+                return KeyEvent.EXIT
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                return KeyEvent.CONTINUE
 
     def run(self):
         """

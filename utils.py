@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 CELL = 50
 BOARD_SIZE = 10
-MAX_DURATION = 1000
+LIMIT_DURATION = 1000
 SESSIONS = 200
 
 Position = namedtuple('Position', ['x', 'y'])
@@ -26,6 +26,13 @@ class Action(Enum):
     DOWN = 2
     LEFT = 3
     RIGHT = 4
+
+class KeyEvent(Enum):
+    """
+    An enumeration representing the possible key events.
+    """
+    EXIT = 1
+    CONTINUE = 2
 
 class GameState(Enum):
     """
@@ -57,9 +64,9 @@ class Game:
         load_path (str): The path where the model (q-table) will be loaded from.
         visual (bool): If True, display training progress.
         dontlearn (bool): If True, the model won't update q-table.
-        randchoice (bool): If True, the agent will select a random maximum direction from the q-table.
         step_by_step (bool): If True, the model will wait for user input after each move.
         manual (bool): If True, play the game manually.
+        fill_zeroes (bool): If True, priorities filling zero values in the q-table.
     """
     round = 0
     state = GameState.RUNNING
@@ -75,9 +82,9 @@ class Game:
     visual = False
     exploit = False
     dontlearn = False
-    randchoice = False
     step_by_step = False
     manual = False
+    fill_zeroes = False
 
     def reset_stats():
         Game.not_ten = 0
