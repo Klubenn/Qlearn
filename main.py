@@ -4,7 +4,6 @@ import statistics
 from interpreter import Interpreter
 from utils import LIMIT_DURATION, Game, Stats
 from visualize import Visualize
-from statistics import mean 
 
 def parse_arguments():
     """
@@ -29,10 +28,10 @@ def parse_arguments():
     Game.env_size = args.boardsize + 2
     Game.save_path = args.save
     Game.load_path = args.load
-    Game.visual = args.visual or args.step_by_step
-    Game.exploit = args.dontlearn or args.exploit
-    Game.dontlearn = args.dontlearn
     Game.step_by_step = args.step_by_step
+    Game.visual = args.visual or args.step_by_step
+    Game.dontlearn = args.dontlearn
+    Game.exploit = args.exploit or args.dontlearn
     Game.manual = args.manual
     Game.fill_zeroes = args.fill_zeroes
     
@@ -42,12 +41,15 @@ def print_stats():
     Print the statistics of the training.
     """
     print()
-    print('Statistics:')
+    # print('Statistics:')
+    if Game.load_path:
+        print(f'Filename = {Game.load_path}')
     print(f'Number of sessions = {Game.sessions}')
     print(f'Limit duration = {LIMIT_DURATION}')
     try:
         print(f'max length = {max(Stats.max_length)}')
         print(f'median length = {int(statistics.median(Stats.all_lengths))}')
+        print(f'mean length = {int(statistics.mean(Stats.all_lengths))}')
     except Exception as e:
         print(f'Error calculating stats: {e}')
     print(f'% breaks = {(Stats.breaks / Game.sessions * 100):.4}')
@@ -56,7 +58,7 @@ def print_stats():
 
 def main():
     parse_arguments()
-    # random.seed(21)
+    random.seed(8)
     try:
         if Game.manual:
             play = Visualize()
