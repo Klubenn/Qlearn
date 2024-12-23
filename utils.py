@@ -85,6 +85,7 @@ class Game:
     step_by_step = False
     manual = False
     fill_zeroes = False
+    seed = None
 
     def reset_stats():
         Game.not_ten = 0

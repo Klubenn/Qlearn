@@ -23,6 +23,8 @@ python3 main.py
 * add max_duration parameter as an input option
 * train long model till the plateau is reached
 * implement count of spare moves since last green apple consume and make condition for explore if too long
+* implement multiple load files to run the tests and further overall statistics
+* Remove from saved training all occurences of `^\s{4}"S.*: 0,$` - maybe insert in code?
 
 ## Current findings to improve performance
 * Squashing snake view to 'SW' for the back view
