@@ -1,11 +1,35 @@
 # Number of training sessions
-sessions: 5000
+sessions: 1000
 
 # Size of the board
 boardsize: 10
 
 # Path to load the training data from
-load: "100k_u.json"
+load: [
+  # "100k_univ",
+  # "110k_univ",
+  # "120k_univ",
+  # "130k_univ",
+  # "140k_univ",
+  # "150k_univ",
+  # "160k_univ",
+  # "170k_univ",
+  # "180k_univ",
+  # "190k_univ",
+  "200k_univ",
+  # "210k_univ_fillzero",
+  # "220k_univ_fillzero",
+  # "230k_univ_fillzero",
+  # "240k_univ_fillzero",
+  # "250k_univ_fillzero",
+  # "260k_univ_fillzero",
+  # "270k_univ_fillzero",
+  # "280k_univ_fillzero",
+  # "290k_univ_fillzero",
+  "300k_univ_fillzero",
+  "300k_univ",
+  
+]
 
 # Display training progress
 # visual: false

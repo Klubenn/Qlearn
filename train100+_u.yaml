@@ -1,14 +1,14 @@
-# Number of training sessions
+# Number of training sessions per epoch
 sessions: 100000
 
 # Size of the board
 # boardsize: 10
 
 # Path to save the training data to
-save: "200k_normal.json"
+save: "univ"
 
 # Path to load the training data from
-load: "100k_normal.json"
+load: "200k_univ"
 
 # Display training progress
 # visual: false
@@ -26,7 +26,12 @@ exploit: true
 # manual: false
 
 # Prioritize filling zero values in the q-table
-# fill-zeroes: false
+# fill-zeroes: true
+
+# If true, the model can be used for any board size
+train-universal: true
+
+epochs: 1
 
 # Seed for random number generator
 # seed: 10

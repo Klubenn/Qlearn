@@ -1,11 +1,11 @@
-# Number of training sessions
+# Number of training sessions per epoch
 sessions: 100000
 
 # Size of the board
 # boardsize: 10
 
 # Path to save the training data to
-save: "100k_u.txt"
+save: "univ"
 
 # Path to load the training data from
 # load: ""
@@ -30,6 +30,8 @@ exploit: false
 
 # If true, the model can be used for any board size
 train-universal: true
+
+epochs: 1
 
 # Seed for random number generator
 # seed: 10

@@ -15,7 +15,7 @@ def parse_arguments():
     """
     parser = argparse.ArgumentParser(description="Train a snake game AI model.")
     parser.add_argument('--config', type=str, help='Path to the configuration file. If present, the configuration file will be used instead of command-line arguments.')
-    parser.add_argument('--sessions', type=int, default=10, help='The number of training sessions to perform')
+    parser.add_argument('--sessions', type=int, default=10, help='The number of training sessions per epoch')
     parser.add_argument('--boardsize', type=int, default=10, help='The size of the board')
     parser.add_argument('--save', type=str, help='The path where the result of the training will be saved')
     parser.add_argument('--load', type=str, help='The path where the training will be loaded from')
@@ -79,8 +79,8 @@ def print_stats(stat_dict: dict) -> None:
     print(df)
 
 
-def update_stat_dict(stat_dict: dict) -> None:
-    stat_dict['model_name'].append(Settings.load_path)
+def update_stat_dict(stat_dict: dict, model_name=Settings.load_path) -> None:
+    stat_dict['model_name'].append(model_name)
     stat_dict['max_length'].append(max(Stats.max_length))
     stat_dict['median_length'].append(int(statistics.median(Stats.all_lengths)))
     stat_dict['mean_length'].append(int(statistics.mean(Stats.all_lengths)))
@@ -92,8 +92,8 @@ def train_model(stat_dict: dict):
     """
     Train the model.
     """
+    play = Interpreter()
     for i in range(Settings.epochs):
-        play = Interpreter()
         play.run()
         if Settings.save_path:
             try:
@@ -112,7 +112,9 @@ def train_model(stat_dict: dict):
                 print('Unseccessful parsing of the model name, saving with default name')
                 save_name = Settings.save_path
             play.ag.save_q_table(save_name)
-    update_stat_dict(stat_dict)
+            update_stat_dict(stat_dict, model_name=save_name)
+            Stats.reset_stats()
+
     print_stats(stat_dict)
 
 
@@ -124,6 +126,7 @@ def evaluate_model(stat_dict: dict):
         Settings.load_path = [Settings.load_path]
     load_paths = Settings.load_path
     for path in load_paths:
+        random.seed(Settings.seed)
         Settings.load_path = path
         play = Interpreter()
         play.run()
