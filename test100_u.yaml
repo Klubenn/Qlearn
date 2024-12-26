@@ -5,7 +5,7 @@ sessions: 5000
 boardsize: 10
 
 # Path to load the training data from
-load: "600k_normal.json"
+load: "100k_u.json"
 
 # Display training progress
 # visual: false
@@ -18,6 +18,9 @@ dontlearn: true
 
 # Prioritize filling zero values in the q-table
 # fill-zeroes: false
+
+# If true, the model can be used for any board size
+train-universal: true
 
 # Seed for random number generator
 seed: 10

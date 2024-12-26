@@ -1,4 +1,4 @@
-from utils import Game, GameState, Position, BOARD_SIZE
+from utils import Step, GameState, Position, BOARD_SIZE, Settings
 import random
 
 
@@ -25,7 +25,7 @@ class Environment:
         x_new, y_new = p.x, p.y
         letter = self.state[y_new][x_new]
         if letter in ['W', 'S'] or (letter == 'R' and len(self.snake_position) == 1):
-            Game.state = GameState.LOST
+            Step.state = GameState.LOST
         else:
             if letter in ['0', 'R']:
                 tail = self.snake_position.pop()
@@ -57,10 +57,10 @@ class Environment:
         Returns:
             list: The initialized board state.
         """
-        arr = list([[] for _ in range(Game.env_size)])
-        for i in range(Game.env_size):
-            for j in range(Game.env_size):
-                if i in [0, Game.env_size -1] or j in [0, Game.env_size -1]:
+        arr = list([[] for _ in range(Settings.env_size)])
+        for i in range(Settings.env_size):
+            for j in range(Settings.env_size):
+                if i in [0, Settings.env_size -1] or j in [0, Settings.env_size -1]:
                     fill = 'W'
                 else:
                     fill = '0'
@@ -110,7 +110,7 @@ class Environment:
         """
         for _ in range(number):
             x, y = self._get_empty_cell()
-            if Game.state == GameState.RUNNING:
+            if Step.state == GameState.RUNNING:
                 self.state[y][x] = color
 
     def _is_empty(self, x, y) -> bool:
@@ -141,7 +141,7 @@ class Environment:
             ]
         if len(empty) == 0:
             print("YOU WON!!!!")
-            Game.state = GameState.WON
+            Step.state = GameState.WON
             return None, None
         return random.choice(empty)
 

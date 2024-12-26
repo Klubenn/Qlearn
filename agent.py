@@ -1,6 +1,6 @@
 import json
 import random
-from utils import Action, Game
+from utils import Action, Settings
 
 class Agent:
     """
@@ -56,13 +56,13 @@ class Agent:
             Action: The selected direction of the move.
         """
         explore = random.choices([True, False], [1 - exploitation_rate, exploitation_rate])[0]
-        if not Game.dontlearn:
+        if not Settings.dontlearn:
             self._initiate_state_weights(state)
         if explore:
             return random.choice([a for a in Action])
         action_weights = {a: int(self.qtable[s]) for a, s in state.items() if s in self.qtable}
         max_value = max(action_weights.values())
-        if Game.fill_zeroes:
+        if Settings.fill_zeroes:
             max_actions = [a for a, weight in action_weights.items() if weight == 0]
             if not max_actions:
                 max_actions = [a for a, weight in action_weights.items() if weight == max_value]

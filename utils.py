@@ -12,6 +12,24 @@ SESSIONS = 200
 
 Position = namedtuple('Position', ['x', 'y'])
 
+
+class Settings:
+    sessions = SESSIONS
+    boardsize = BOARD_SIZE
+    env_size = BOARD_SIZE + 2  # Walls on each of the sides
+    save_path = None
+    load_path = None
+    epochs = None
+    visual = False
+    exploit = False
+    dontlearn = False
+    step_by_step = False
+    manual = False
+    fill_zeroes = False
+    train_universal = False
+    seed = None
+
+
 class Action(Enum):
     """
     An enumeration representing the possible movement directions of the snake.
@@ -27,12 +45,14 @@ class Action(Enum):
     LEFT = 3
     RIGHT = 4
 
+
 class KeyEvent(Enum):
     """
     An enumeration representing the possible key events.
     """
     EXIT = 1
     CONTINUE = 2
+
 
 class GameState(Enum):
     """
@@ -47,7 +67,8 @@ class GameState(Enum):
     LOST = 1
     WON = 2
 
-class Game:
+
+class Step:
     """
     A class to represent the game state and round.
 
@@ -57,7 +78,7 @@ class Game:
         not_ten (int): The number of rounds where the snake length was less than 10.
         max_duration (int): The maximum duration of a round.
         max_length (int): The maximum length of the snake.
-        sessions (int): The number of game sessions to perform.
+        sessions (int): The number of Settings.sessions to perform.
         boardsize (int): The size of the game board.
         env_size (int): The size of the game environment including walls.
         save_path (str): The path where the model (q-table) will be saved.
@@ -65,44 +86,42 @@ class Game:
         visual (bool): If True, display training progress.
         dontlearn (bool): If True, the model won't update q-table.
         step_by_step (bool): If True, the model will wait for user input after each move.
-        manual (bool): If True, play the game manually.
+        manual (bool): If True, play the Settings.manually.
         fill_zeroes (bool): If True, priorities filling zero values in the q-table.
     """
-    round = 0
+    # round = 0
     state = GameState.RUNNING
     not_ten = 0
     max_duration = 0
     max_length = 0
     max_break = 0
-    sessions = SESSIONS
-    boardsize = BOARD_SIZE
-    env_size = BOARD_SIZE + 2  # Walls on each of the sides
-    save_path = None
-    load_path = None
-    visual = False
-    exploit = False
-    dontlearn = False
-    step_by_step = False
-    manual = False
-    fill_zeroes = False
-    seed = None
 
     def reset_stats():
-        Game.not_ten = 0
-        Game.max_duration = 0
-        Game.max_length = 0
-        Game.max_break = 0
+        Step.state = GameState.RUNNING
+        Step.not_ten = 0
+        Step.max_duration = 0
+        Step.max_length = 0
+        Step.max_break = 0
+
 
 class Stats:
+    round = 0
     max_length = []
     all_lengths = []
     breaks = 0
     not_ten = 0
 
     def update_stats():
-        Stats.max_length.append(Game.max_length)
-        Stats.breaks += Game.max_break
-        Stats.not_ten += Game.not_ten
+        Stats.max_length.append(Step.max_length)
+        Stats.breaks += Step.max_break
+        Stats.not_ten += Step.not_ten
+
+    def reset_stats():
+        Stats.round = 0
+        Stats.max_length = []
+        Stats.all_lengths = []
+        Stats.breaks = 0
+        Stats.not_ten = 0
 
 class Movement:
     """

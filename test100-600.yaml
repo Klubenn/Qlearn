@@ -1,11 +1,18 @@
 # Number of training sessions
-sessions: 5000
+sessions: 50
 
 # Size of the board
-boardsize: 10
+boardsize: 9
 
 # Path to load the training data from
-load: "600k_normal.json"
+load: [
+  "100k_normal.json",
+  "200k_normal.json",
+  "300k_normal.json",
+  "400k_normal.json",
+  "500k_normal.json",
+  "600k_normal.json"
+]
 
 # Display training progress
 # visual: false

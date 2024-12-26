@@ -2,14 +2,14 @@ import random
 import time
 import pygame
 from environment import Environment
-from utils import Game, GameState, Movement, CELL, KeyEvent
+from utils import Stats, Step, GameState, Movement, CELL, KeyEvent, Settings
 
 
 class Visualize:
     def __init__(self) -> None:
         pygame.init()
-        self.window_width = Game.env_size * CELL
-        self.window_height = Game.env_size * CELL
+        self.window_width = Settings.env_size * CELL
+        self.window_height = Settings.env_size * CELL
         self.window = pygame.display.set_mode((self.window_width, self.window_height))
         pygame.display.set_caption("Learn2Slither")
 
@@ -22,10 +22,10 @@ class Visualize:
             pygame.draw.circle(self.window, color, (x * CELL + CELL / 2, y * CELL + CELL / 2), 20)
 
         def draw_board():
-            for i in range(Game.boardsize + 1):
+            for i in range(Settings.boardsize + 1):
                 iterate = CELL * i + CELL
-                pygame.draw.line(self.window, "white", (CELL, iterate), (CELL * Game.boardsize + CELL, iterate), 2)
-                pygame.draw.line(self.window, "white", (iterate, CELL), (iterate, CELL * Game.boardsize + CELL), 2)
+                pygame.draw.line(self.window, "white", (CELL, iterate), (CELL * Settings.boardsize + CELL, iterate), 2)
+                pygame.draw.line(self.window, "white", (iterate, CELL), (iterate, CELL * Settings.boardsize + CELL), 2)
 
         for i, array in enumerate(state):
             for j, value in enumerate(array):
@@ -76,20 +76,20 @@ class Visualize:
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN:
                     env.move(Movement.move_down(env.snake_position[0]))
             
-            if Game.state != GameState.RUNNING:
+            if Step.state != GameState.RUNNING:
                 self.window.fill((25, 25, 25))
                 self.draw_state(env.state)
                 font = pygame.font.Font('Decay-M5RB.ttf', 50)
-                phrase = 'You won!' if Game.state == GameState.WON else 'Game Over!'
+                phrase = 'You won!' if Step.state == GameState.WON else 'Game Over!'
                 text = font.render(phrase, False, (255, 0, 0))
                 self.window.blit(text, (100, 250))
                 pygame.display.update()
                 time.sleep(1)
-                Game.round += 1
-                Game.state = GameState.RUNNING
+                Stats.round += 1
+                Step.state = GameState.RUNNING
                 print("Game over")
                 print(f"Snake length: {len(env.snake_position)}")
-                print(f"Rounds played: {Game.round}")
+                print(f"Rounds played: {Stats.round}")
                 env = Environment()
 
             self.draw_state(env.state)
