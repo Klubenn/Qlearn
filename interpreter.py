@@ -33,7 +33,7 @@ class Interpreter:
     def _get_snake_view(self) -> dict:
         x, y = self.env.snake_position[0]
         vertical = [self.env.state[i][x] for i in range(Settings.env_size)]
-        if Settings.train_universal:
+        if Settings.universal:
             return {
                 Action.UP: ''.join([i[0] for i in itertools.groupby(vertical[y-1::-1])]),
                 Action.DOWN: ''.join([i[0] for i in itertools.groupby(vertical[y + 1:])]),

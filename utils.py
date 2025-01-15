@@ -26,7 +26,7 @@ class Settings:
     step_by_step = False
     manual = False
     fill_zeroes = False
-    train_universal = False
+    universal = False
     seed = None
 
 

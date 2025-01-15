@@ -2,6 +2,7 @@ import argparse
 import random
 import statistics
 
+from matplotlib import pyplot as plt
 import yaml
 from interpreter import Interpreter
 from utils import Settings, Stats
@@ -25,7 +26,7 @@ def parse_arguments():
     parser.add_argument('--step-by-step', action='store_true', help='If present, the model will wait for user input after each move')
     parser.add_argument('--manual', action='store_true', help='Play the Settings.manually')
     parser.add_argument('--fill-zeroes', action='store_true', help='Priorities filling zero values in the q-table')
-    parser.add_argument('--train-universal', action='store_true', help='Train the model that would work on any board size')
+    parser.add_argument('--universal', action='store_true', help='Train the model that would work on any board size')
     parser.add_argument('--seed', type=int, default=random.randint(0, 2**32 - 1) , help='Seed for random number generator')
     parser.add_argument('--epochs', type=int, default=1, help='Number of epochs to train the model')
     return parser.parse_args()
@@ -43,7 +44,7 @@ def apply_cl_settings(args):
     Settings.exploit = args.exploit or args.dontlearn
     Settings.manual = args.manual
     Settings.fill_zeroes = args.fill_zeroes
-    Settings.train_universal = args.train_universal
+    Settings.universal = args.universal
     Settings.seed = args.seed
     Settings.epochs = args.epochs
     
@@ -60,7 +61,7 @@ def apply_config_settings(settings):
     Settings.exploit = settings.get('exploit', False) or settings.get('dontlearn', False)
     Settings.manual = settings.get('manual', False)
     Settings.fill_zeroes = settings.get('fill-zeroes', False)
-    Settings.train_universal = settings.get('train-universal', False)
+    Settings.universal = settings.get('universal', False)
     Settings.seed = settings.get('seed', random.randint(0, 2**32 - 1))
     Settings.epochs = settings.get('epochs', 1)
 
@@ -79,8 +80,55 @@ def print_stats(stat_dict: dict) -> None:
     print(df)
 
 
+def plot_stats(stat_dict: dict) -> None:
+    """
+    Plot the statistics.
+    """
+    df = pd.DataFrame(stat_dict)
+
+    # Create a figure and a set of subplots
+    fig, ax1 = plt.subplots(figsize=(10, 6))
+
+    # Plot max_length, median_length, and mean_length on the primary y-axis
+    ax1.plot(df['model_name'], df['max_length'], marker='o', label='Max Length')
+    ax1.plot(df['model_name'], df['mean_length'], marker='o', label='Mean Length')
+
+    # Set titles and labels for the primary y-axis
+    ax1.set_title('Model Statistics')
+    ax1.set_xlabel('Model Name')
+    ax1.set_ylabel('Length Values')
+    ax1.set_xticklabels(df['model_name'], rotation=45, ha='right')
+
+    ax1.set_ylim(0, max(df['max_length']) + 1)
+
+    # Add legend for the primary y-axis
+    ax1.legend(loc='upper left')
+
+    # Create a secondary y-axis
+    ax2 = ax1.twinx()
+
+    # Plot %_breaks and %_not_ten on the secondary y-axis
+    # ax2.plot(df['model_name'], df['%_breaks'], marker='x', linestyle='--', color='r', label='% Breaks')
+    ax2.plot(df['model_name'], df['%_not_ten'], marker='x', linestyle='--', color='g', label='% Less than Ten')
+
+    # Set labels for the secondary y-axis
+    ax2.set_ylabel('Percentage Values')
+
+    # Set limits for the secondary y-axis
+    ax2.set_ylim(0, 100)
+
+    # Add legend for the secondary y-axis
+    ax2.legend(loc='upper right')
+
+    # Adjust layout
+    plt.tight_layout()
+
+    # Show the plot
+    plt.show()
+
+
 def update_stat_dict(stat_dict: dict, model_name=Settings.load_path) -> None:
-    stat_dict['model_name'].append(model_name)
+    stat_dict['model_name'].append(model_name.split('/')[-1])
     stat_dict['max_length'].append(max(Stats.max_length))
     stat_dict['median_length'].append(int(statistics.median(Stats.all_lengths)))
     stat_dict['mean_length'].append(int(statistics.mean(Stats.all_lengths)))
@@ -132,10 +180,10 @@ def evaluate_model(stat_dict: dict):
         play.run()
         if Settings.save_path:
             play.ag.save_q_table(Settings.save_path)
-        update_stat_dict(stat_dict)
+        update_stat_dict(stat_dict, model_name=path)
         Stats.reset_stats()
     print_stats(stat_dict)
-    
+    plot_stats(stat_dict)
 
 
 def main():

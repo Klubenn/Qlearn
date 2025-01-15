@@ -29,7 +29,7 @@ exploit: false
 # fill-zeroes: false
 
 # If true, the model can be used for any board size
-train-universal: true
+universal: true
 
 epochs: 1
 
