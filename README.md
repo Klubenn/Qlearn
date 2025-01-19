@@ -94,24 +94,23 @@ To evaluate the trained model, use the following parameter value: `dontlearn: tr
 The main challenge of the project was to come up with an idea of what the current state of the snake would be, that could be saved to the Q-table and would allow the snake to make a decision on where to move next. As the snake's view is limited to only 4 directions - up, down, left, right - and it does not see the rest of the board, this state could use only information in intersection of row and column of snake's head. I came up with an idea to map every direction separately, from snake's head till the wall of every direction (not including the head). Here is the example, how board view is limited to snake view and which states for the Q-table are used:
 ```
 # BOARD           # SNAKE VIEW      # STATES
-WWWWWWWWWWWW              W         
-W0000000000W              0         "UP": "0000W"
-W0000000000W              0         "DOWN": "00G00W"
-W0000000000W              0         "LEFT": "SS00R00W"
-W0000000000W              0         "RIGHT": "00W"
-W00R00SSH00W      W00R00SSH00W      
-W00000S0000W              0         #LEGEND
-W0000000000W              0         H - snake's head
-W0000000G00W              G         S - snake's body
-W00G0000000W              0         G - green apple
-W0000000000W              0         R - red apple
+WWWWWWWWWWWW              W         "UP": "OOOOW"
+WOOOOOOOOOOW              O         "DOWN": "OOGOOW"
+WOOOOOOOOOOW              O         "LEFT": "SSOOROOW"
+WOOOOOOOOOOW              O         "RIGHT": "OOW"
+WOOOOOOOOOOW              O         
+WOOROOSSHOOW      WOOROOSSHOOW      #LEGEND
+WOOOOOSOOOOW              O         H - snake's head
+WOOOOOOOOOOW              O         S - snake's body
+WOOOOOOOGOOW              G         G - green apple
+WOOGOOOOOOOW              O         R - red apple
+WOOOOOOOOOOW              O         O - empty cell
 WWWWWWWWWWWW              W         W - wall
 ```
 
+One of the aims of the project was to train the snake so that it would reach the length of 10 and more cells, that is why in the evaluation graph the % of small snakes is listed.
 
-One of the aims of the project was to train the snake so that it would reach the length not less than 10 cells, that is why in the evaluation graph the % of small snakes is listed.
-
-One of the possible bonuses for the project was to train such a model, that would work without additional training on any board size. Such models can be trained with the `universal: true` parameter. The idea behind that approach is a different mapping of snake's view which removes any duplicated cell types that follow each other. So if the snake in one direction sees `000G00W` the view would be squashed to `0G0W`. This approach allowes to use the same model for any board size, but results in slightly reduced maximum lengths of the snake.
+One of the possible bonuses for the project was to train such a model, that would work without additional training on any board size. Such models can be trained with the `universal: true` parameter. The idea behind that approach is a different mapping of snake's view which removes any duplicated cell types that follow each other. So if the snake in one direction sees `OOOGOOW` the view would be squashed to `OGOW`. This approach allowes to use the same model for any board size, but results in slightly reduced maximum lengths of the snake.
 
 ## Contributing
 Contributions are welcome! Please open an issue or submit a pull request if you have any improvements or bug fixes.
