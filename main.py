@@ -24,12 +24,13 @@ def parse_arguments():
                         of training sessions per epoch')
     parser.add_argument('--boardsize', type=int, default=10, help='The size \
                         of the board')
-    parser.add_argument('--save', type=str, help='The path where the result \
-                        of the training will be saved')
+    parser.add_argument('--save', type=str, help='The postfix that will be \
+                        added to the number of training sessions performed \
+                        under which the model will be saved')
     parser.add_argument('--load', type=str, help='The path where the training \
                         will be loaded from')
     parser.add_argument('--visual', action='store_true', help='Display \
-                        training progress')
+                        training progress graphically')
     parser.add_argument('--exploit', action='store_true', help="If present, \
                         the model doesn't explore")
     parser.add_argument('--dontlearn', action='store_true', help="If present, \
