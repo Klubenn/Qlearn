@@ -9,11 +9,12 @@ The aim of this project is to teach a snake to play the game using the Q-learnin
 - [Configuration](#configuration)
 - [Training](#training)
 - [Evaluation](#evaluation)
+- [Research and Considerations](#research-and-considerations)
 - [Contributing](#contributing)
 - [License](#license)
 
 ## Introduction
-This project implements a Q-learning algorithm to train a snake to play the classic snake game. The Q-learning algorithm is a model-free reinforcement learning technique that aims to learn the optimal policy for an agent to take actions in an environment to maximize cumulative reward.
+This project implements a Q-learning algorithm to train a snake to play the classic snake game. There are 2 green apples and 1 red apple. If the snake eats the green apple, it grows by one cell, if red - it shrinks by one cell. If the snake hits the wall or it's own body or if it's size reduces to 0 cells, the game ends. The Q-learning algorithm is a model-free reinforcement learning technique that aims to learn the optimal policy for an agent to take actions in an environment to maximize cumulative reward. Specific conditions of the project limit the view of the snake to only intersection of row and column where it's head is currently located. That means that the snake does not see the whole board and location of elements that are on other rows/columns than it's head. The snake does not remember it's previous view and makes the decision on where to move next based exclusively on current view.
 
 ## Setup
 To set up the project, clone the repo and follow these steps:
@@ -72,7 +73,7 @@ epochs: 10
 ```
 
 ## Training
-To train the snake using the Q-learning algorithm using the standard settings, run the following command:
+To train the snake using the standard settings, run the following command:
 ```sh
 python3 main.py --sessions 1000 --save training
 ```
@@ -88,6 +89,29 @@ Besides that all that is a multiple of 1000 gets `k` instead of `000`, so after 
 
 ## Evaluation
 To evaluate the trained model, use the following parameter value: `dontlearn: true` and specify the model to be loaded. During evaluation the Q-table is not updated and at the end when using config file with multiple models, the graph representing snake maximum and mean length and % of snakes who's size was less than 10 is displayed.
+
+## Research, Implementation and Considerations
+The main challenge of the project was to come up with an idea of what the current state of the snake would be, that could be saved to the Q-table and would allow the snake to make a decision on where to move next. As the snake's view is limited to only 4 directions - up, down, left, right - and it does not see the rest of the board, this state could use only information in intersection of row and column of snake's head. I came up with an idea to map every direction separately, from snake's head till the wall of every direction (not including the head). Here is the example, how board view is limited to snake view and which states for the Q-table are used:
+```
+# BOARD           # SNAKE VIEW      # STATES
+WWWWWWWWWWWW              W         
+W0000000000W              0         "UP": "0000W"
+W0000000000W              0         "DOWN": "00G00W"
+W0000000000W              0         "LEFT": "SS00R00W"
+W0000000000W              0         "RIGHT": "00W"
+W00R00SSH00W      W00R00SSH00W      
+W00000S0000W              0         #LEGEND
+W0000000000W              0         H - snake's head
+W0000000G00W              G         S - snake's body
+W00G0000000W              0         G - green apple
+W0000000000W              0         R - red apple
+WWWWWWWWWWWW              W         W - wall
+```
+
+
+One of the aims of the project was to train the snake so that it would reach the length not less than 10 cells, that is why in the evaluation graph the % of small snakes is listed.
+
+One of the possible bonuses for the project was to train such a model, that would work without additional training on any board size. Such models can be trained with the `universal: true` parameter. The idea behind that approach is a different mapping of snake's view which removes any duplicated cell types that follow each other. So if the snake in one direction sees `000G00W` the view would be squashed to `0G0W`. This approach allowes to use the same model for any board size, but results in slightly reduced maximum lengths of the snake.
 
 ## Contributing
 Contributions are welcome! Please open an issue or submit a pull request if you have any improvements or bug fixes.
