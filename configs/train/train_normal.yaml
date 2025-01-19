@@ -1,20 +1,20 @@
 # Number of training sessions per epoch
-sessions: 100000
+sessions: 100
 
-# Size of the board default 10
+# Size of the board default: 10
 # boardsize: 10
 
-# Path to save the training data to
-save: "univ"
+# ending of the path to save the model
+save: "normal"
 
 # Path to load the training data from
-load: "200k_univ"
+# load: ""
 
 # Display training progress
 # visual: false
 
-# If true, the model doesn't explore
-exploit: true
+# If true, the model doesn't explore, default: false, if dontlearn is true, exploit is true
+exploit: false
 
 # If true, the model won't update q-table
 # dontlearn: false
@@ -26,12 +26,12 @@ exploit: true
 # manual: false
 
 # Prioritize filling zero values in the q-table
-# fill-zeroes: true
+# fill-zeroes: false
 
 # If true, the model can be used for any board size
-universal: true
+# universal: true
 
-# The number of saved models each trained the specified number of sessions
+# The program runs `epochs * sessions` games and saves the model `epoch` times
 epochs: 1
 
 # Seed for random number generator

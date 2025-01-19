@@ -1,12 +1,11 @@
 import time
 from agent import Agent
 from environment import Environment
-from utils import KeyEvent, Settings, Stats, logger, LIMIT_DURATION, Action, Step, GameState, Movement
-import random
+from utils import KeyEvent, Settings, Stats, LIMIT_DURATION, Action, Step, GameState, Movement
 import itertools
 
 from visualize import Visualize
-    
+
 
 class Interpreter:
     def __init__(self) -> None:
@@ -29,7 +28,7 @@ class Interpreter:
             return -1
         elif self.current_cell == 'G':
             return 20
-    
+
     def _get_snake_view(self) -> dict:
         x, y = self.env.snake_position[0]
         vertical = [self.env.state[i][x] for i in range(Settings.env_size)]
@@ -46,7 +45,7 @@ class Interpreter:
             Action.LEFT: ''.join(self.env.state[y][x-1::-1]),
             Action.RIGHT: ''.join(self.env.state[y][x + 1:])
         }
-        
+
     def _send_reward(self) -> None:
         if Settings.dontlearn:
             return
@@ -71,14 +70,12 @@ class Interpreter:
             self.env = Environment()
             divider = max(Settings.sessions // 10, 1)
             if (Stats.round % divider) == 0:
-                if Settings.sessions >= 10000:
-                    logger.info(f'exploit_rate: {self.exploitation_rate:.1f} | max_len: {Step.max_length} | max_dur: {Step.max_duration} | % breaks: {Step.max_break / divider * 100:.2f} | % not_ten: {Step.not_ten / divider * 100:.2f} | qtab_len: {len(self.ag.qtable)}')
                 if not Settings.dontlearn:
                     self.exploitation_rate += 0.1
                     self.exploitation_rate = 1 if self.exploitation_rate > 0.9 else self.exploitation_rate
                 Stats.update_stats()
                 Step.reset_stats()
-    
+
     def run(self):
         action_to_function = {
             Action.UP: Movement.move_up,
@@ -109,9 +106,3 @@ class Interpreter:
                 Step.state = GameState.LOST
                 self.next_state = None
             self._update_stats()
-
-
-if __name__ == "__main__":
-    random.seed(42)
-    play = Interpreter()
-    play.run()

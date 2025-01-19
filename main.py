@@ -86,44 +86,26 @@ def plot_stats(stat_dict: dict) -> None:
     """
     df = pd.DataFrame(stat_dict)
 
-    # Create a figure and a set of subplots
-    fig, ax1 = plt.subplots(figsize=(10, 6))
+    _, ax1 = plt.subplots(figsize=(10, 6))
+    ax2 = ax1.twinx()
 
-    # Plot max_length, median_length, and mean_length on the primary y-axis
     ax1.plot(df['model_name'], df['max_length'], marker='o', label='Max Length')
     ax1.plot(df['model_name'], df['mean_length'], marker='o', label='Mean Length')
+    ax2.plot(df['model_name'], df['%_not_ten'], marker='x', linestyle='--', color='g', label='% Below Ten')
 
-    # Set titles and labels for the primary y-axis
     ax1.set_title('Model Statistics')
     ax1.set_xlabel('Model Name')
     ax1.set_ylabel('Length Values')
     ax1.set_xticklabels(df['model_name'], rotation=45, ha='right')
-
-    ax1.set_ylim(0, max(df['max_length']) + 1)
-
-    # Add legend for the primary y-axis
-    ax1.legend(loc='upper left')
-
-    # Create a secondary y-axis
-    ax2 = ax1.twinx()
-
-    # Plot %_breaks and %_not_ten on the secondary y-axis
-    # ax2.plot(df['model_name'], df['%_breaks'], marker='x', linestyle='--', color='r', label='% Breaks')
-    ax2.plot(df['model_name'], df['%_not_ten'], marker='x', linestyle='--', color='g', label='% Less than Ten')
-
-    # Set labels for the secondary y-axis
     ax2.set_ylabel('Percentage Values')
 
-    # Set limits for the secondary y-axis
+    ax1.set_ylim(0, max(df['max_length']) + 10)
     ax2.set_ylim(0, 100)
 
-    # Add legend for the secondary y-axis
+    ax1.legend(loc='upper left')
     ax2.legend(loc='upper right')
 
-    # Adjust layout
     plt.tight_layout()
-
-    # Show the plot
     plt.show()
 
 

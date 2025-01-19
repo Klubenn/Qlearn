@@ -1,11 +1,31 @@
 # Number of training sessions
-sessions: 50
+sessions: 10
 
 # Size of the board
-boardsize: 15
+boardsize: 10
 
 # Path to load the training data from
 load: [
+  "models/universal/10_univ",
+  "models/universal/20_univ",
+  "models/universal/30_univ",
+  "models/universal/40_univ",
+  "models/universal/50_univ",
+  "models/universal/60_univ",
+  "models/universal/70_univ",
+  "models/universal/80_univ",
+  "models/universal/90_univ",
+  "models/universal/100_univ",
+  "models/universal/1k_univ",
+  "models/universal/10k_univ",
+  "models/universal/20k_univ",
+  "models/universal/30k_univ",
+  "models/universal/40k_univ",
+  "models/universal/50k_univ",
+  "models/universal/60k_univ",
+  "models/universal/70k_univ",
+  "models/universal/80k_univ",
+  "models/universal/90k_univ",
   "models/universal/100k_univ",
   "models/universal/110k_univ",
   "models/universal/120k_univ",
