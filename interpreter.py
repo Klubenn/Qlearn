@@ -1,7 +1,16 @@
 import time
 from agent import Agent
 from environment import Environment
-from utils import KeyEvent, Settings, Stats, LIMIT_DURATION, Action, Step, GameState, Movement
+from utils import (
+    KeyEvent,
+    Settings,
+    Stats,
+    Action,
+    Step,
+    GameState,
+    Movement,
+    LIMIT_DURATION,
+)
 import itertools
 
 from visualize import Visualize
@@ -34,10 +43,14 @@ class Interpreter:
         vertical = [self.env.state[i][x] for i in range(Settings.env_size)]
         if Settings.universal:
             return {
-                Action.UP: ''.join([i[0] for i in itertools.groupby(vertical[y-1::-1])]),
-                Action.DOWN: ''.join([i[0] for i in itertools.groupby(vertical[y + 1:])]),
-                Action.LEFT: ''.join([i[0] for i in itertools.groupby(self.env.state[y][x-1::-1])]),
-                Action.RIGHT: ''.join([i[0] for i in itertools.groupby(self.env.state[y][x + 1:])])
+                Action.UP: ''.join([i[0] for i in itertools.groupby(
+                    vertical[y-1::-1])]),
+                Action.DOWN: ''.join([i[0] for i in itertools.groupby(
+                    vertical[y + 1:])]),
+                Action.LEFT: ''.join([i[0] for i in itertools.groupby(
+                    self.env.state[y][x-1::-1])]),
+                Action.RIGHT: ''.join([i[0] for i in itertools.groupby(
+                    self.env.state[y][x + 1:])])
             }
         return {
             Action.UP: ''.join(vertical[y-1::-1]),
@@ -49,7 +62,8 @@ class Interpreter:
     def _send_reward(self) -> None:
         if Settings.dontlearn:
             return
-        self.ag.update_q_table(self.state, self.next_state, self.action, self._calculate_reward())
+        self.ag.update_q_table(
+            self.state, self.next_state, self.action, self._calculate_reward())
 
     def _request_action(self) -> Action:
         return self.ag.select_action(self.state, self.exploitation_rate)
@@ -72,7 +86,9 @@ class Interpreter:
             if (Stats.round % divider) == 0:
                 if not Settings.dontlearn:
                     self.exploitation_rate += 0.1
-                    self.exploitation_rate = 1 if self.exploitation_rate > 0.9 else self.exploitation_rate
+                    self.exploitation_rate = (
+                        1 if self.exploitation_rate > 0.9
+                        else self.exploitation_rate)
                 Stats.update_stats()
                 Step.reset_stats()
 
@@ -98,8 +114,10 @@ class Interpreter:
                     break
             self.state = self.next_state or self._get_snake_view()
             self.action = self._request_action()
-            self.current_cell = self.env.move(action_to_function[self.action](self.env.snake_position[0]))
-            self.next_state = self._get_snake_view() if Step.state == GameState.RUNNING else None
+            self.current_cell = self.env.move(action_to_function[self.action](
+                self.env.snake_position[0]))
+            self.next_state = (self._get_snake_view()
+                               if Step.state == GameState.RUNNING else None)
             self._send_reward()
             if self.env.duration > LIMIT_DURATION:
                 Step.max_break += 1

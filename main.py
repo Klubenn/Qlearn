@@ -10,27 +10,46 @@ from visualize import Visualize
 
 import pandas as pd
 
+
 def parse_arguments():
     """
     Parse command-line arguments.
     """
-    parser = argparse.ArgumentParser(description="Train a snake game AI model.")
-    parser.add_argument('--config', type=str, help='Path to the configuration file. If present, the configuration file will be used instead of command-line arguments.')
-    parser.add_argument('--sessions', type=int, default=10, help='The number of training sessions per epoch')
-    parser.add_argument('--boardsize', type=int, default=10, help='The size of the board')
-    parser.add_argument('--save', type=str, help='The path where the result of the training will be saved')
-    parser.add_argument('--load', type=str, help='The path where the training will be loaded from')
-    parser.add_argument('--visual', action='store_true', help='Display training progress')
-    parser.add_argument('--exploit', action='store_true', help="If present, the model doesn't explore")
-    parser.add_argument('--dontlearn', action='store_true', help="If present, the model won't update q-table")
-    parser.add_argument('--step-by-step', action='store_true', help='If present, the model will wait for user input after each move')
-    parser.add_argument('--manual', action='store_true', help='Play the Settings.manually')
-    parser.add_argument('--fill-zeroes', action='store_true', help='Priorities filling zero values in the q-table')
-    parser.add_argument('--universal', action='store_true', help='Train the model that would work on any board size')
-    parser.add_argument('--seed', type=int, default=random.randint(0, 2**32 - 1) , help='Seed for random number generator')
-    parser.add_argument('--epochs', type=int, default=1, help='Number of epochs to train the model')
+    parser = argparse.ArgumentParser(
+        description="Train a snake game AI model.")
+    parser.add_argument('--config', type=str, help='Path to the configuration \
+                        file. If present, the configuration file will be used \
+                        instead of command-line arguments.')
+    parser.add_argument('--sessions', type=int, default=10, help='The number \
+                        of training sessions per epoch')
+    parser.add_argument('--boardsize', type=int, default=10, help='The size \
+                        of the board')
+    parser.add_argument('--save', type=str, help='The path where the result \
+                        of the training will be saved')
+    parser.add_argument('--load', type=str, help='The path where the training \
+                        will be loaded from')
+    parser.add_argument('--visual', action='store_true', help='Display \
+                        training progress')
+    parser.add_argument('--exploit', action='store_true', help="If present, \
+                        the model doesn't explore")
+    parser.add_argument('--dontlearn', action='store_true', help="If present, \
+                        the model won't update q-table")
+    parser.add_argument('--step-by-step', action='store_true', help='If \
+                        present, the model will wait for user input after \
+                        each move')
+    parser.add_argument('--manual', action='store_true', help='Play the \
+                        Settings.manually')
+    parser.add_argument('--fill-zeroes', action='store_true',
+                        help='Priorities filling zero values in the q-table')
+    parser.add_argument('--universal', action='store_true', help='Train the \
+                        model that would work on any board size')
+    parser.add_argument('--seed', type=int,
+                        default=random.randint(0, 2**32 - 1),
+                        help='Seed for random number generator')
+    parser.add_argument('--epochs', type=int, default=1, help='Number of \
+                        epochs to train the model')
     return parser.parse_args()
-    
+
 
 def apply_cl_settings(args):
     Settings.sessions = args.sessions
@@ -47,7 +66,7 @@ def apply_cl_settings(args):
     Settings.universal = args.universal
     Settings.seed = args.seed
     Settings.epochs = args.epochs
-    
+
 
 def apply_config_settings(settings):
     Settings.sessions = settings.get('sessions', 10)
@@ -56,9 +75,11 @@ def apply_config_settings(settings):
     Settings.save_path = settings.get('save')
     Settings.load_path = settings.get('load')
     Settings.step_by_step = settings.get('step-by-step', False)
-    Settings.visual = settings.get('visual', False) or settings.get('step-by-step', False)
+    Settings.visual = settings.get('visual', False) or settings.get(
+        'step-by-step', False)
     Settings.dontlearn = settings.get('dontlearn', False)
-    Settings.exploit = settings.get('exploit', False) or settings.get('dontlearn', False)
+    Settings.exploit = settings.get('exploit', False) or settings.get(
+        'dontlearn', False)
     Settings.manual = settings.get('manual', False)
     Settings.fill_zeroes = settings.get('fill-zeroes', False)
     Settings.universal = settings.get('universal', False)
@@ -69,7 +90,7 @@ def apply_config_settings(settings):
 def load_config(config_path):
     print(config_path)
     with open(config_path, 'r') as file:
-        return yaml.safe_load(file)    
+        return yaml.safe_load(file)
 
 
 def print_stats(stat_dict: dict) -> None:
@@ -89,9 +110,12 @@ def plot_stats(stat_dict: dict) -> None:
     _, ax1 = plt.subplots(figsize=(10, 6))
     ax2 = ax1.twinx()
 
-    ax1.plot(df['model_name'], df['max_length'], marker='o', label='Max Length')
-    ax1.plot(df['model_name'], df['mean_length'], marker='o', label='Mean Length')
-    ax2.plot(df['model_name'], df['%_not_ten'], marker='x', linestyle='--', color='g', label='% Below Ten')
+    ax1.plot(df['model_name'], df['max_length'], marker='o',
+             label='Max Length')
+    ax1.plot(df['model_name'], df['mean_length'], marker='o',
+             label='Mean Length')
+    ax2.plot(df['model_name'], df['%_not_ten'], marker='x',
+             linestyle='--', color='g', label='% Below Ten')
 
     ax1.set_title('Model Statistics')
     ax1.set_xlabel('Model Name')
@@ -112,7 +136,8 @@ def plot_stats(stat_dict: dict) -> None:
 def update_stat_dict(stat_dict: dict, model_name=Settings.load_path) -> None:
     stat_dict['model_name'].append(model_name.split('/')[-1])
     stat_dict['max_length'].append(max(Stats.max_length))
-    stat_dict['median_length'].append(int(statistics.median(Stats.all_lengths)))
+    stat_dict['median_length'].append(int(statistics.median(
+        Stats.all_lengths)))
     stat_dict['mean_length'].append(int(statistics.mean(Stats.all_lengths)))
     stat_dict['%_breaks'].append(Stats.breaks / Settings.sessions * 100)
     stat_dict['%_not_ten'].append(Stats.not_ten / Settings.sessions * 100)
@@ -138,8 +163,9 @@ def train_model(stat_dict: dict):
                     exp += 1
                     number //= 1000
                 save_name = f'{number}{"k" * exp}_' + Settings.save_path
-            except:
-                print('Unseccessful parsing of the model name, saving with default name')
+            except Exception:
+                print('Unseccessful parsing of the model name, saving with \
+                      default name')
                 save_name = Settings.save_path
             play.ag.save_q_table(save_name)
             update_stat_dict(stat_dict, model_name=save_name)
@@ -195,7 +221,7 @@ def main():
                 evaluate_model(stat_dict)
     except KeyboardInterrupt:
         print()
-    
+
 
 if __name__ == '__main__':
     main()

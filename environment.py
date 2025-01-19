@@ -1,4 +1,4 @@
-from utils import Step, GameState, Position, BOARD_SIZE, Settings
+from utils import Step, GameState, Position, Settings
 import random
 
 
@@ -14,7 +14,8 @@ class Environment:
 
     def move(self, p: Position) -> str:
         """
-        Moves the snake head to the new cell and adjusts the environment to the required state.
+        Moves the snake head to the new cell and adjusts the environment
+        to the required state.
 
         Args:
             p (Position): The new position of the snake's head.
@@ -24,7 +25,8 @@ class Environment:
         """
         x_new, y_new = p.x, p.y
         letter = self.state[y_new][x_new]
-        if letter in ['W', 'S'] or (letter == 'R' and len(self.snake_position) == 1):
+        if letter in ['W', 'S'] or (letter == 'R' and
+                                    len(self.snake_position) == 1):
             Step.state = GameState.LOST
         else:
             if letter in ['0', 'R']:
@@ -39,7 +41,8 @@ class Environment:
             self.snake_position.insert(0, Position(x_new, y_new))
             self.state[y_new][x_new] = 'H'
             if len(self.snake_position) > 1:
-                self.state[self.snake_position[1].y][self.snake_position[1].x] = 'S'
+                self.state[self.snake_position[1].y][
+                    self.snake_position[1].x] = 'S'
         self.duration += 1
         return letter
 
@@ -60,31 +63,34 @@ class Environment:
         arr = list([[] for _ in range(Settings.env_size)])
         for i in range(Settings.env_size):
             for j in range(Settings.env_size):
-                if i in [0, Settings.env_size -1] or j in [0, Settings.env_size -1]:
+                if (i in [0, Settings.env_size - 1]
+                        or j in [0, Settings.env_size - 1]):
                     fill = 'W'
                 else:
                     fill = '0'
                 arr[i].append(fill)
         return arr
-   
+
     def _initialize_snake(self) -> list[Position]:
         """
         Initialize the snake's position on the board.
 
         Returns:
-            list[Position]: List of Position objects representing the snake's position.
+            list[Position]: List of Position objects representing the
+                snake's position.
         """
         self.snake_position = []
-        
+
         # Set snake head
         x, y = self._get_empty_cell()
         self.state[y][x] = 'H'
         snake_position = [Position(x, y)]
-        
+
         # Set snake body
         for _ in range(2):
             while True:
-                x_new, y_new = random.choice([(x, y - 1), (x, y + 1), (x - 1, y), (x + 1, y)])
+                x_new, y_new = random.choice([(x, y - 1), (x, y + 1),
+                                              (x - 1, y), (x + 1, y)])
                 if self._is_empty(x_new, y_new):
                     x, y = x_new, y_new
                     self.state[y][x] = 'S'
@@ -92,7 +98,7 @@ class Environment:
                     break
 
         return snake_position
-    
+
     def _initialize_apples(self) -> None:
         """
         Initialize apples on the board.
@@ -125,7 +131,7 @@ class Environment:
             bool: True if empty, False if not.
         """
         return self.state[y][x] == '0'
-    
+
     def _get_empty_cell(self) -> Position:
         """
         Returns the coordinates of an empty cell.
@@ -134,9 +140,9 @@ class Environment:
             Position: The coordinates of an empty cell.
         """
         empty = [
-            Position(x, y) 
-            for y, line in enumerate(self.state) 
-            for x, _ in enumerate(line) 
+            Position(x, y)
+            for y, line in enumerate(self.state)
+            for x, _ in enumerate(line)
             if self.state[y][x] == '0'
             ]
         if len(empty) == 0:
@@ -144,4 +150,3 @@ class Environment:
             Step.state = GameState.WON
             return None, None
         return random.choice(empty)
-

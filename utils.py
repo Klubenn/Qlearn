@@ -75,21 +75,24 @@ class Step:
     Attributes:
         round (int): The current round of the game.
         state (GameState): The current state of the game.
-        not_ten (int): The number of rounds where the snake length was less than 10.
+        not_ten (int): The number of rounds where the snake length was less
+            than 10.
         max_duration (int): The maximum duration of a round.
         max_length (int): The maximum length of the snake.
         sessions (int): The number of Settings.sessions to perform.
         boardsize (int): The size of the game board.
         env_size (int): The size of the game environment including walls.
         save_path (str): The path where the model (q-table) will be saved.
-        load_path (str): The path where the model (q-table) will be loaded from.
+        load_path (str): The path where the model (q-table) will be
+            loaded from.
         visual (bool): If True, display training progress.
         dontlearn (bool): If True, the model won't update q-table.
-        step_by_step (bool): If True, the model will wait for user input after each move.
+        step_by_step (bool): If True, the model will wait for user input
+            after each move.
         manual (bool): If True, play the Settings.manually.
-        fill_zeroes (bool): If True, priorities filling zero values in the q-table.
+        fill_zeroes (bool): If True, priorities filling zero values in
+            the q-table.
     """
-    # round = 0
     state = GameState.RUNNING
     not_ten = 0
     max_duration = 0
@@ -123,37 +126,37 @@ class Stats:
         Stats.breaks = 0
         Stats.not_ten = 0
 
+
 class Movement:
     """
-    A class containing static methods to move the snake in different 
+    A class containing static methods to move the snake in different
     directions and return new position.
 
     Methods:
         move_up(p: Position) -> Position:
             Moves the snake up by one cell.
-        
+
         move_down(p: Position) -> Position:
             Moves the snake down by one cell.
-        
+
         move_left(p: Position) -> Position:
             Moves the snake left by one cell.
-        
+
         move_right(p: Position) -> Position:
             Moves the snake right by one cell.
     """
     @staticmethod
     def move_up(p: Position) -> Position:
         return Position(p.x, p.y - 1)
-    
+
     @staticmethod
     def move_down(p: Position) -> Position:
         return Position(p.x, p.y + 1)
-    
+
     @staticmethod
     def move_left(p: Position) -> Position:
         return Position(p.x - 1, p.y)
-    
+
     @staticmethod
     def move_right(p: Position) -> Position:
         return Position(p.x + 1, p.y)
-    
