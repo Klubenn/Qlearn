@@ -1,0 +1,38 @@
+# Number of training sessions per epoch
+sessions: 20
+
+# Size of the board default: 10
+boardsize: 10
+
+# ending of the path to save the model
+save: "visual"
+
+# Path to load the training data from
+# load: ""
+
+# Display training progress
+visual: true
+
+# If true, the model doesn't explore, default: false, if dontlearn is true, exploit is true
+# exploit: true
+
+# If true, the model won't update q-table
+# dontlearn: false
+
+# If true, the model will wait for user input after each move
+# step-by-step: true
+
+# Play the game manually
+manual: true
+
+# Prioritize filling zero values in the q-table
+# fill-zeroes: false
+
+# If true, the model can be used for any board size
+universal: true
+
+# The program runs `epochs * sessions` games and saves the model `epoch` times
+epochs: 1
+
+# Seed for random number generator
+# seed: 10

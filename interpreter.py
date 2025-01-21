@@ -103,7 +103,7 @@ class Interpreter:
             visual = Visualize()
         while Stats.round != Settings.sessions:
             if Settings.visual:
-                visual.draw_state(self.env.state)
+                visual.draw_state(self.env, self.exploitation_rate)
                 while True:
                     event = visual.catch_key_event()
                     if event == KeyEvent.EXIT:

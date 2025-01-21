@@ -14,7 +14,7 @@ The aim of this project is to teach a snake to play the game using the Q-learnin
 - [License](#license)
 
 ## Introduction
-This project implements a Q-learning algorithm to train a snake to play the classic snake game. There are 2 green apples and 1 red apple. If the snake eats the green apple, it grows by one cell, if red - it shrinks by one cell. If the snake hits the wall or it's own body or if it's size reduces to 0 cells, the game ends. The Q-learning algorithm is a model-free reinforcement learning technique that aims to learn the optimal policy for an agent to take actions in an environment to maximize cumulative reward. Specific conditions of the project limit the view of the snake to only intersection of row and column where it's head is currently located. That means that the snake does not see the whole board and location of elements that are on other rows/columns than it's head. The snake does not remember it's previous view and makes the decision on where to move next based exclusively on current view.
+This project implements a Q-learning algorithm to train a snake to play the classic snake game. There are 2 green apples and 1 red apple. If the snake eats a green apple, it grows by one cell; if it eats a red apple, it shrinks by one cell. If the snake hits the wall or its own body, or if its size reduces to 0 cells, the game ends. The Q-learning algorithm is a model-free reinforcement learning technique that aims to learn the optimal policy for an agent to take actions in an environment to maximize cumulative reward. Specific conditions of the project limit the view of the snake to only the intersection of the row and column where its head is currently located. This means that the snake does not see the whole board or the location of elements that are on other rows/columns than its head. The snake does not remember its previous view and makes the decision on where to move next based exclusively on the current view.
 
 ## Setup
 To set up the project, clone the repo and follow these steps:
@@ -79,19 +79,21 @@ python3 main.py --sessions 1000 --save training
 ```
 This will produce a file `1k_training` which contains the Q-table with weights for the 10x10 board.
 
-Initial training should be performed with `exploit: false` (default) so that the training gradually shifts from explore to exploit strategy. That is achieved in 10 equal steps. The training starts with exploitation rate equal to 0.0 and every `sessions/10` rounds it increases by 0.1. By the end of the training the exploitation rate is 0.9.
+Initial training should be performed with `exploit: false` (default) so that the training gradually shifts from an exploration to an exploitation strategy. This is achieved in 10 equal steps. The training starts with an exploitation rate equal to 0.0, and every `sessions/10` rounds it increases by 0.1. By the end of the training, the exploitation rate is 0.9.
 
-The next training should be launched loading the model produced in the previous step, but this time change the parameter value to `exploit: true`. Now all the training is done with the exploitation rate 1.0.
+The next training should be launched by loading the model produced in the previous step, but this time change the parameter value to `exploit: true`. Now all the training is done with an exploitation rate of 1.0.
 
-Note that the number of training sessions which is written out to the file name is calculated gradually. That means that if the training loaded file `100_train` and there were 10 new sessions, the new filename will be `110_train`.
+Nevertheless, exploration is not really important in this implementation as the only positive reward is given for the green apple, and the empty cell has a reward of -1. As all new, not yet visited states get a value of 0, this means that the snake will choose either unknown states or states with an apple in front of it, which leads to some kind of exploration during the training.
 
-Besides that all that is a multiple of 1000 gets `k` instead of `000`, so after `100000` sessions the output will be `100k`.
+Note that the number of training sessions written out to the file name is calculated gradually. This means that if the training loaded file is `100_train` and there were 10 new sessions, the new filename will be `110_train`.
+
+Additionally, any number that is a multiple of 1000 gets `k` instead of `000`, so after `100000` sessions the output will be `100k`.
 
 ## Evaluation
-To evaluate the trained model, use the following parameter value: `dontlearn: true` and specify the model to be loaded. During evaluation the Q-table is not updated and at the end when using config file with multiple models, the graph representing snake maximum and mean length and % of snakes who's size was less than 10 is displayed.
+To evaluate the trained model, use the following parameter value: `dontlearn: true` and specify the model to be loaded. During evaluation, the Q-table is not updated, and at the end, when using a config file with multiple models, a graph representing the snake's maximum and mean length and the percentage of snakes whose size was less than 10 is displayed.
 
 ## Research, Implementation and Considerations
-The main challenge of the project was to come up with an idea of what the current state of the snake would be, that could be saved to the Q-table and would allow the snake to make a decision on where to move next. As the snake's view is limited to only 4 directions - up, down, left, right - and it does not see the rest of the board, this state could use only information in intersection of row and column of snake's head. I came up with an idea to map every direction separately, from snake's head till the wall of every direction (not including the head). Here is the example, how board view is limited to snake view and which states for the Q-table are used:
+The main challenge of the project was to come up with an idea of what the current state of the snake would be, that could be saved to the Q-table and would allow the snake to make a decision on where to move next. As the snake's view is limited to only 4 directions - up, down, left, right - and it does not see the rest of the board, this state could use only information in the intersection of the row and column of the snake's head. I came up with an idea to map every direction separately, from the snake's head to the wall in every direction (not including the head). Here is an example of how the board view is limited to the snake view and which states for the Q-table are used:
 ```
 # BOARD           # SNAKE VIEW      # STATES
 WWWWWWWWWWWW              W         "UP": "OOOOW"
@@ -108,9 +110,9 @@ WOOOOOOOOOOW              O         O - empty cell
 WWWWWWWWWWWW              W         W - wall
 ```
 
-One of the aims of the project was to train the snake so that it would reach the length of 10 and more cells, that is why in the evaluation graph the % of small snakes is listed.
+One of the aims of the project was to train the snake to reach a length of 10 or more cells, which is why the evaluation graph lists the percentage of small snakes.
 
-One of the possible bonuses for the project was to train such a model, that would work without additional training on any board size. Such models can be trained with the `universal: true` parameter. The idea behind that approach is a different mapping of snake's view which removes any duplicated cell types that follow each other. So if the snake in one direction sees `OOOGOOW` the view would be squashed to `OGOW`. This approach allowes to use the same model for any board size, but results in slightly reduced maximum lengths of the snake.
+One of the possible bonuses for the project was to train a model that would work without additional training on any board size. Such models can be trained with the `universal: true` parameter. The idea behind this approach is a different mapping of the snake's view, which removes any duplicated cell types that follow each other. So if the snake in one direction sees `OOOGOOW`, the view would be squashed to `OGOW`. This approach allows the same model to be used for any board size but results in slightly reduced maximum lengths of the snake compared to the normal mode.
 
 ## Contributing
 Contributions are welcome! Please open an issue or submit a pull request if you have any improvements or bug fixes.
