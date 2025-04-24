@@ -25,7 +25,6 @@ class Settings:
     dontlearn = False
     step_by_step = False
     manual = False
-    fill_zeroes = False
     universal = False
     seed = None
 
@@ -90,8 +89,6 @@ class Step:
         step_by_step (bool): If True, the model will wait for user input
             after each move.
         manual (bool): If True, play the Settings.manually.
-        fill_zeroes (bool): If True, priorities filling zero values in
-            the q-table.
     """
     state = GameState.RUNNING
     not_ten = 0

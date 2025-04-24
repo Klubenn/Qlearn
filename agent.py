@@ -69,14 +69,7 @@ class Agent:
         action_weights = {a: int(self.qtable[s]) for a, s in state.items()
                           if s in self.qtable}
         max_value = max(action_weights.values())
-        if Settings.fill_zeroes:
-            max_actions = [a for a, weight in action_weights.items()
-                           if weight == 0]
-            if not max_actions:
-                max_actions = [a for a, weight in action_weights.items()
-                               if weight == max_value]
-        else:
-            max_actions = [a for a, weight in action_weights.items()
+        max_actions = [a for a, weight in action_weights.items()
                            if weight == max_value]
         return random.choice(max_actions)
 
@@ -101,7 +94,7 @@ class Agent:
         """
         if new_state:
             maxQ_next = max([self.qtable[s] for s in new_state.values()
-                             if s in self.qtable])
+                             if s in self.qtable] or [0])
         else:
             maxQ_next = 0
         self.qtable[state[action]] = self.qtable[state[action]] + self.lr * (
