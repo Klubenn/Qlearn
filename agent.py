@@ -60,7 +60,7 @@ class Agent:
         Returns:
             Action: The selected direction of the move.
         """
-        if Settings.visual:
+        if Settings.visual and Settings.step_by_step:
             self._print_snake_view(state)
         explore = random.choices([True, False],
                                  [1 - exploitation_rate, exploitation_rate])[0]
@@ -113,8 +113,9 @@ class Agent:
             None
         """
         try:
+            q_table = self.qtable.copy()
             with open(path, 'w') as f:
-                json.dump(self.qtable, f, indent=4)
+                json.dump(q_table, f, indent=4)
         except Exception as e:
             print(f'Error saving Q-table: {e}')
 
