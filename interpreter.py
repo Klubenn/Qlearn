@@ -102,6 +102,8 @@ class Interpreter:
         if Settings.visual:
             visual = Visualize()
         while Stats.round != Settings.sessions:
+            self.state = self.next_state or self._get_snake_view()
+            self.action = self._request_action()
             if Settings.visual:
                 visual.draw_state(self.env, self.exploitation_rate)
                 while True:
@@ -112,8 +114,6 @@ class Interpreter:
                         continue
                     time.sleep(0.2)
                     break
-            self.state = self.next_state or self._get_snake_view()
-            self.action = self._request_action()
             self.current_cell = self.env.move(action_to_function[self.action](
                 self.env.snake_position[0]))
             self.next_state = (self._get_snake_view()

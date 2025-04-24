@@ -60,6 +60,8 @@ class Agent:
         Returns:
             Action: The selected direction of the move.
         """
+        if Settings.visual:
+            self._print_snake_view(state)
         explore = random.choices([True, False],
                                  [1 - exploitation_rate, exploitation_rate])[0]
         if not Settings.dontlearn:
@@ -153,3 +155,36 @@ class Agent:
         for s in state.values():
             if s not in self.qtable:
                 self.qtable[s] = 0
+
+    def _print_snake_view(self, state: dict) -> None:
+        """
+        Prints the snake's view in all possible directions.
+
+        Args:
+            state (dict): A dictionary mapping each direction (Action) to the
+                corresponding state string.
+        Returns:
+            None
+        """
+        left = len(state[Action.LEFT])
+        right = len(state[Action.RIGHT])
+        up = len(state[Action.UP])
+        down = len(state[Action.DOWN])
+        for row in range(up + down + 1):
+            for column in range(left + right + 1):
+                if column == left:
+                    if row == up:
+                        print('H', end=' ')
+                    elif row < up:
+                        print(state[Action.UP][-row - 1], end=' ')
+                    else:
+                        print(state[Action.DOWN][row - up - 1], end=' ')
+                elif row == up:
+                    if column < left:
+                        print(state[Action.LEFT][-column - 1], end=' ')
+                    else:
+                        print(state[Action.RIGHT][column - left - 1], end=' ')
+                else:
+                    print(' ', end=' ')
+            print()
+        print()
