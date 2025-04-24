@@ -17,6 +17,7 @@ class Settings:
     sessions = SESSIONS
     boardsize = BOARD_SIZE
     env_size = BOARD_SIZE + 2  # Walls on each of the sides
+    delay = 0.2
     save_path = None
     load_path = None
     epochs = None
@@ -51,6 +52,8 @@ class KeyEvent(Enum):
     """
     EXIT = 1
     CONTINUE = 2
+    UP = 3
+    DOWN = 4
 
 
 class GameState(Enum):

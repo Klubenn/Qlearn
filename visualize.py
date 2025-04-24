@@ -18,7 +18,7 @@ class Visualize:
     def __init__(self) -> None:
         pygame.init()
         self.playfield = max(Settings.env_size, BOARD_SIZE + 2)
-        self.window_width = self.playfield * CELL + 300
+        self.window_width = self.playfield * CELL + 400
         self.window_height = self.playfield * CELL
         self.window = pygame.display.set_mode((self.window_width,
                                                self.window_height))
@@ -54,7 +54,9 @@ class Visualize:
             info = [f'Rounds: {Stats.round}',
                     f'Current length: {len(env.snake_position)}',
                     f'Maximum length: {max(Stats.all_lengths)}' if Stats.all_lengths else '',
-                    f'Exploitation rate: {exploitation_rate:.2f}' if exploitation_rate is not None else '']
+                    f'Exploitation rate: {exploitation_rate:.2f}' if exploitation_rate is not None else '',
+                    f'Current speed: {1 / Settings.delay:.1f} cells/s',
+                    ]
             for i in range(len(info)):
                 text = font.render(info[i], False, (255, 255, 255))
                 self.window.blit(text, (self.playfield * CELL + 20, i * 50 + 20))
@@ -88,6 +90,10 @@ class Visualize:
                 return KeyEvent.EXIT
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 return KeyEvent.CONTINUE
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
+                return KeyEvent.UP
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN:
+                return KeyEvent.DOWN
 
     def run(self):
         """

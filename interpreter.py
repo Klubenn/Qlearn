@@ -110,9 +110,13 @@ class Interpreter:
                     event = visual.catch_key_event()
                     if event == KeyEvent.EXIT:
                         return
+                    if event == KeyEvent.UP:
+                        Settings.delay /= 1.2 if Settings.delay > 0.01 else 1
+                    elif event == KeyEvent.DOWN:
+                        Settings.delay *= 1.2 if Settings.delay < 2 else 1
                     if Settings.step_by_step and event != KeyEvent.CONTINUE:
                         continue
-                    time.sleep(0.2)
+                    time.sleep(Settings.delay)
                     break
             self.current_cell = self.env.move(action_to_function[self.action](
                 self.env.snake_position[0]))
