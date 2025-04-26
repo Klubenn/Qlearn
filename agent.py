@@ -72,7 +72,7 @@ class Agent:
                           if s in self.qtable}
         max_value = max(action_weights.values())
         max_actions = [a for a, weight in action_weights.items()
-                           if weight == max_value]
+                       if weight == max_value]
         return random.choice(max_actions)
 
     def update_q_table(self, state: dict, new_state: dict | None,

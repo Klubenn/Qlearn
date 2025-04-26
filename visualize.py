@@ -53,13 +53,16 @@ class Visualize:
             font = pygame.font.SysFont('freesans', 25)
             info = [f'Rounds: {Stats.round}',
                     f'Current length: {len(env.snake_position)}',
-                    f'Maximum length: {max(Stats.all_lengths)}' if Stats.all_lengths else '',
-                    f'Exploitation rate: {exploitation_rate:.2f}' if exploitation_rate is not None else '',
+                    f'Maximum length: {max(Stats.all_lengths)}'
+                    if Stats.all_lengths else '',
+                    f'Exploitation rate: {exploitation_rate:.2f}'
+                    if exploitation_rate is not None else '',
                     f'Current speed: {1 / Settings.delay:.1f} cells/s',
                     ]
             for i in range(len(info)):
                 text = font.render(info[i], False, (255, 255, 255))
-                self.window.blit(text, (self.playfield * CELL + 20, i * 50 + 20))
+                self.window.blit(text, (self.playfield * CELL + 20,
+                                        i * 50 + 20))
 
         for i, array in enumerate(env.state):
             for j, value in enumerate(array):

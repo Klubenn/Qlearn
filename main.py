@@ -121,8 +121,8 @@ def plot_stats(df: pd.DataFrame) -> None:
     ax1.set_title('Model Statistics')
     ax1.set_xlabel(x_name)
     ax1.set_ylabel('Length Values')
-    ax1.set_xticks(range(len(x_value)))  # Ensure proper alignment
-    ax1.set_xticklabels(x_value, rotation=45, ha='right')  # Use actual x_value for labels
+    ax1.set_xticks(range(len(x_value)))
+    ax1.set_xticklabels(x_value, rotation=45, ha='right')
     ax2.set_ylabel('Percentage Values')
 
     ax1.set_ylim(0, max(df['max_length']) + 10)

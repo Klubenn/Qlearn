@@ -100,14 +100,17 @@ class Interpreter:
             Action.LEFT: Movement.move_left,
             Action.RIGHT: Movement.move_right
         }
+
         def action_save(key):
             try:
                 if key.char == 's':
-                    save_path = Settings.save_path or str(time.time()) + '_' + str(Stats.round)
+                    save_path = Settings.save_path or str(time.time()) \
+                        + '_' + str(Stats.round)
                     self.ag.save_q_table(save_path)
                     print('\bThe model was saved as', save_path)
             except AttributeError:
                 pass
+
         if Settings.visual:
             visual = Visualize()
         print("Press 's' to save the model")
