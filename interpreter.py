@@ -1,5 +1,4 @@
 import time
-from pynput import keyboard
 from agent import Agent
 from environment import Environment
 from utils import (
@@ -100,22 +99,8 @@ class Interpreter:
             Action.LEFT: Movement.move_left,
             Action.RIGHT: Movement.move_right
         }
-
-        def action_save(key):
-            try:
-                if key.char == 's':
-                    save_path = Settings.save_path or str(time.time()) \
-                        + '_' + str(Stats.round)
-                    self.ag.save_q_table(save_path)
-                    print('\bThe model was saved as', save_path)
-            except AttributeError:
-                pass
-
         if Settings.visual:
             visual = Visualize()
-        print("Press 's' to save the model")
-        listener = keyboard.Listener(on_press=action_save)
-        listener.start()
         while Stats.round != Settings.sessions:
             self.state = self.next_state or self._get_snake_view()
             self.action = self._request_action()

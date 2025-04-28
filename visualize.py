@@ -57,7 +57,11 @@ class Visualize:
                     if Stats.all_lengths else '',
                     f'Exploitation rate: {exploitation_rate:.2f}'
                     if exploitation_rate is not None else '',
-                    f'Current speed: {1 / Settings.delay:.1f} cells/s',
+                    f'Current speed: {1 / Settings.delay:.1f} cells/s'
+                    if not Settings.step_by_step and not Settings.manual
+                    else '',
+                    'Press SPACE to continue' if Settings.step_by_step
+                    else '',
                     ]
             for i in range(len(info)):
                 text = font.render(info[i], False, (255, 255, 255))

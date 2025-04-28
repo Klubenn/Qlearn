@@ -1,7 +1,9 @@
 import argparse
 import random
 import statistics
+import time
 
+from pynput import keyboard
 from matplotlib import pyplot as plt
 import yaml
 from interpreter import Interpreter
@@ -20,10 +22,14 @@ def parse_arguments():
     parser.add_argument('--config', type=str, help='Path to the configuration \
                         file. If present, the configuration file will be used \
                         instead of command-line arguments.')
+    parser.add_argument('--epochs', type=int, default=1, help='Number of \
+                        epochs to train the model. If save option is \
+                        specified, the model will be saved after each epoch. \
+                        Default is 1.')
     parser.add_argument('--sessions', type=int, default=10, help='The number \
-                        of training sessions per epoch')
+                        of training sessions per epoch. Default is 10.')
     parser.add_argument('--boardsize', type=int, default=10, help='The size \
-                        of the board')
+                        of the board. Default is 10.')
     parser.add_argument('--save', type=str, help='The postfix that will be \
                         added to the number of training sessions performed \
                         under which the model will be saved')
@@ -39,14 +45,12 @@ def parse_arguments():
                         present, the model will wait for user input after \
                         each move')
     parser.add_argument('--manual', action='store_true', help='Play the \
-                        Settings.manually')
+                        game manually')
     parser.add_argument('--universal', action='store_true', help='Train the \
                         model that would work on any board size')
     parser.add_argument('--seed', type=int,
                         default=random.randint(0, 2**32 - 1),
                         help='Seed for random number generator')
-    parser.add_argument('--epochs', type=int, default=1, help='Number of \
-                        epochs to train the model')
     return parser.parse_args()
 
 
@@ -95,6 +99,9 @@ def print_stats(stat_dict: dict) -> None:
     Print the statistics.
     """
     df = pd.DataFrame(stat_dict)
+    if df.empty:
+        print("No statistics to display.")
+        return
     print(df)
     plot_stats(df)
 
@@ -136,6 +143,8 @@ def plot_stats(df: pd.DataFrame) -> None:
 
 
 def update_stat_dict(stat_dict: dict, epoch=0, model_name='') -> None:
+    if not Stats.all_lengths:
+        return
     stat_dict['model_name'].append(model_name.split('/')[-1])
     stat_dict['epoch'].append(epoch)
     stat_dict['max_length'].append(max(Stats.max_length))
@@ -151,6 +160,19 @@ def train_model(stat_dict: dict):
     Train the model.
     """
     play = Interpreter()
+
+    def action_save(key):
+        try:
+            if key.char == 's':
+                save_path = Settings.save_path or str(time.time()) \
+                    + '_' + str(Stats.round)
+                play.ag.save_q_table(save_path)
+                print('\bThe model was saved as', save_path)
+        except AttributeError:
+            pass
+    listener = keyboard.Listener(on_press=action_save)
+    listener.start()
+    print("Press 's' to save the model")
     for i in range(Settings.epochs):
         play.run()
         if Settings.save_path:
