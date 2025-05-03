@@ -2,7 +2,7 @@
 sessions: 10
 
 # Size of the board default: 10
-# boardsize: 10
+boardsize: 15
 
 # ending of the path to save the model
 save: "univ"
@@ -24,9 +24,6 @@ exploit: false
 
 # Play the game manually
 # manual: false
-
-# Prioritize filling zero values in the q-table
-# fill-zeroes: false
 
 # If true, the model can be used for any board size
 universal: true

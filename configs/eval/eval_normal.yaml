@@ -23,8 +23,5 @@ load: [
 # If true, the model won't update q-table
 dontlearn: true
 
-# Prioritize filling zero values in the q-table
-# fill-zeroes: false
-
 # Seed for random number generator
 seed: 10

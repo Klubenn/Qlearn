@@ -160,12 +160,13 @@ def train_model(stat_dict: dict):
     Train the model.
     """
     play = Interpreter()
+    i = 0
 
     def action_save(key):
         try:
             if key.char == 's':
-                save_path = Settings.save_path or str(time.time()) \
-                    + '_' + str(Stats.round)
+                save_path = f'{Settings.save_path or str(time.time())}' \
+                    + '_' + str(i * Settings.sessions + Stats.round)
                 play.ag.save_q_table(save_path)
                 print('\bThe model was saved as', save_path)
         except AttributeError:
@@ -197,6 +198,7 @@ def train_model(stat_dict: dict):
         else:
             update_stat_dict(stat_dict, epoch=i)
         Stats.reset_stats()
+    i += 1
 
     print_stats(stat_dict)
 

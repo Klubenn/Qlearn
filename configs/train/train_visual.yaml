@@ -23,10 +23,7 @@ visual: true
 # step-by-step: true
 
 # Play the game manually
-manual: true
-
-# Prioritize filling zero values in the q-table
-# fill-zeroes: false
+# manual: true
 
 # If true, the model can be used for any board size
 universal: true

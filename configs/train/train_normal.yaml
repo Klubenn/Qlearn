@@ -25,9 +25,6 @@ exploit: false
 # Play the game manually
 # manual: false
 
-# Prioritize filling zero values in the q-table
-# fill-zeroes: false
-
 # If true, the model can be used for any board size
 # universal: true
 
